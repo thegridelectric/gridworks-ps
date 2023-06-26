@@ -1,0 +1,14 @@
+﻿MpAlias,csv.distp.oneprice.1_0_0
+PNodeAlias,w.caiso.n15.rcea
+MethodAlias,gw.ca.rcea.oneprice
+Comment,
+StartYearUtc,2019
+StartMonthUtc,1
+StartDayUtc,1
+StartHourUtc,8
+StartMinuteUtc,0
+UniformSliceDurationHrs,1
+TimezoneString,US/Pacific
+CurrencyUnit,USD
+PriceUid,c916408a-7528-4591-8e71-7e0314456b33
+UniformPrice, 13

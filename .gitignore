@@ -1,0 +1,29 @@
+.mypy_cache/
+/.coverage
+/.coverage.*
+/.nox/
+/.python-version
+/.pytype/
+/dist/
+/docs/_build/
+/src/*.egg-info/
+__pycache__/
+
+.DS_Store
+.vscode
+.idea
+
+.env
+
+# scratch files and folders
+scratch*
+cook*
+
+# Code generation airtable
+CodeGenerationTools/GridworksCore/SSoT/Airtable.xml
+CodeGenerationTools/GridworksCore/SassyMQ/
+*.zfs
+
+# Ignore coverage
+.coverage
+htmlcov

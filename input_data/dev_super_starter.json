@@ -1,0 +1,202 @@
+{
+  "SupervisorContainer": {
+    "SupervisorContainerId": "995b0334-9940-424f-8fb1-4745e52ba295",
+    "WorldInstanceAlias": "d1__1",
+    "SupervisorGNodeInstanceId": "20e7edec-05e5-4152-bfec-ec21ddd2e3dd",
+    "SupervisorGNodeAlias": "d1.isone.ver.keene.super1",
+    "TypeName": "supervisor.container.gt",
+    "Version": "000",
+    "StatusGtEnumSymbol": "f48cff43"
+  },
+  "GniList": [
+    {
+      "GNodeInstanceId": "acb29264-7b06-4636-90ff-7c595497cd7c",
+      "GNode": {
+        "GNodeId": "7b1df82e-10c5-49d9-8d02-1e837e31b87e",
+        "Alias": "d1",
+        "GNodeRegistryAddr": "MONSDN5MXG4VMIOHJNCJJBVASG7HEZQSCEIKJAPEPVI5ZJUMQGXQKSOAYU",
+        "TypeName": "g.node.gt",
+        "Version": "000",
+        "StatusGtEnumSymbol": "a2cfc2f7",
+        "RoleGtEnumSymbol": "3901c7d2"
+      },
+      "SupervisorContainerId": "32eccfd8-5ee0-4a94-a634-582915ad631b",
+      "StartTimeUnixS": 1577854800,
+      "EndTimeUnixS": 0,
+      "TypeName": "g.node.instance.gt",
+      "Version": "000",
+      "StrategyGtEnumSymbol": "642c83d3",
+      "StatusGtEnumSymbol": "69241259"
+    },
+    {
+      "GNodeInstanceId": "ee6d496d-05bc-4120-90f2-1478b3690f67",
+      "GNode": {
+        "GNodeId": "c0119953-a48f-495d-87cc-58fb92eb4cee",
+        "Alias": "d1.isone",
+        "GNodeRegistryAddr": "MONSDN5MXG4VMIOHJNCJJBVASG7HEZQSCEIKJAPEPVI5ZJUMQGXQKSOAYU",
+        "TypeName": "g.node.gt",
+        "Version": "000",
+        "StatusGtEnumSymbol": "a2cfc2f7",
+        "RoleGtEnumSymbol": "304890c5"
+      },
+      "SupervisorContainerId": "00000000-0000-0000-0000-000000000000",
+      "StartTimeUnixS": 1577854800,
+      "EndTimeUnixS": 0,
+      "TypeName": "g.node.instance.gt",
+      "Version": "000",
+      "StrategyGtEnumSymbol": "00000000",
+      "StatusGtEnumSymbol": "69241259"
+    },
+    {
+      "GNodeInstanceId": "22d6d953-60ba-445b-b189-64a4d024650a",
+      "GNode": {
+        "GNodeId": "b572d571-22cf-4157-8c0f-33e9724d684f",
+        "Alias": "d1.isone.ver",
+        "GNodeRegistryAddr": "MONSDN5MXG4VMIOHJNCJJBVASG7HEZQSCEIKJAPEPVI5ZJUMQGXQKSOAYU",
+        "TypeName": "g.node.gt",
+        "Version": "000",
+        "StatusGtEnumSymbol": "a2cfc2f7",
+        "RoleGtEnumSymbol": "234cfaa2"
+      },
+      "SupervisorContainerId": "00000000-0000-0000-0000-000000000000",
+      "StartTimeUnixS": 1577854800,
+      "EndTimeUnixS": 0,
+      "TypeName": "g.node.instance.gt",
+      "Version": "000",
+      "StrategyGtEnumSymbol": "00000000",
+      "StatusGtEnumSymbol": "69241259"
+    },
+    {
+      "GNodeInstanceId": "7a1d7aa2-79ae-4f17-bc2b-3532a3d9039c",
+      "GNode": {
+        "GNodeId": "575f374f-8533-4733-baf7-91146c607445",
+        "Alias": "d1.isone.ver.keene",
+        "GNodeRegistryAddr": "MONSDN5MXG4VMIOHJNCJJBVASG7HEZQSCEIKJAPEPVI5ZJUMQGXQKSOAYU",
+        "TypeName": "g.node.gt",
+        "Version": "000",
+        "StatusGtEnumSymbol": "a2cfc2f7",
+        "RoleGtEnumSymbol": "304890c5"
+      },
+      "SupervisorContainerId": "c54495d6-193d-4fbc-9200-f9ab629b8ff5",
+      "StartTimeUnixS": 1577854800,
+      "EndTimeUnixS": 0,
+      "TypeName": "g.node.instance.gt",
+      "Version": "000",
+      "StrategyGtEnumSymbol": "5e18a52e",
+      "StatusGtEnumSymbol": "69241259"
+    },
+    {
+      "GNodeInstanceId": "20e7edec-05e5-4152-bfec-ec21ddd2e3dd",
+      "GNode": {
+        "GNodeId": "664a3250-ce51-4fe3-9ce9-a4b6416451fb",
+        "Alias": "d1.isone.ver.keene.super1",
+        "GNodeRegistryAddr": "MONSDN5MXG4VMIOHJNCJJBVASG7HEZQSCEIKJAPEPVI5ZJUMQGXQKSOAYU",
+        "TypeName": "g.node.gt",
+        "Version": "000",
+        "StatusGtEnumSymbol": "a2cfc2f7",
+        "RoleGtEnumSymbol": "88112a93"
+      },
+      "SupervisorContainerId": "995b0334-9940-424f-8fb1-4745e52ba295",
+      "StartTimeUnixS": 1577854800,
+      "EndTimeUnixS": 0,
+      "TypeName": "g.node.instance.gt",
+      "Version": "000",
+      "StrategyGtEnumSymbol": "4bb2cf7e",
+      "StatusGtEnumSymbol": "69241259"
+    },
+    {
+      "GNodeInstanceId": "97eba574-bd20-45b5-bf82-9ba2f492d8f6",
+      "GNode": {
+        "GNodeId": "e23eb2ec-4064-4921-89d4-b006edc81216",
+        "Alias": "d1.isone.ver.keene.holly",
+        "GNodeRegistryAddr": "MONSDN5MXG4VMIOHJNCJJBVASG7HEZQSCEIKJAPEPVI5ZJUMQGXQKSOAYU",
+        "TypeName": "g.node.gt",
+        "Version": "000",
+        "StatusGtEnumSymbol": "a2cfc2f7",
+        "RoleGtEnumSymbol": "8021dcad"
+      },
+      "SupervisorContainerId": "995b0334-9940-424f-8fb1-4745e52ba295",
+      "StartTimeUnixS": 1577854800,
+      "EndTimeUnixS": 0,
+      "AlgoAddress": "4JHRDNY4F6RCVGPALZULZWZNVP3OKT3DATEOLINCGILVPGHUOFY7KCHVIQ",
+      "TypeName": "g.node.instance.gt",
+      "Version": "000",
+      "StrategyGtEnumSymbol": "f5961401",
+      "StatusGtEnumSymbol": "69241259"
+    },
+    {
+      "GNodeInstanceId": "345e83c6-aefd-4af3-858a-b02b5cca9aad",
+      "GNode": {
+        "GNodeId": "802bc4e9-bc22-4c75-9358-795b1efee15a",
+        "Alias": "d1.isone.ver.keene.juniper",
+        "GNodeRegistryAddr": "MONSDN5MXG4VMIOHJNCJJBVASG7HEZQSCEIKJAPEPVI5ZJUMQGXQKSOAYU",
+        "TypeName": "g.node.gt",
+        "Version": "000",
+        "StatusGtEnumSymbol": "a2cfc2f7",
+        "RoleGtEnumSymbol": "8021dcad"
+      },
+      "SupervisorContainerId": "995b0334-9940-424f-8fb1-4745e52ba295",
+      "StartTimeUnixS": 1577854800,
+      "EndTimeUnixS": 0,
+      "AlgoAddress": "YL3MAWSIST2DWX5GOTZYVX74GNSAVMX52RKSEDT4KIO644JCCRFTFKM5UM",
+      "TypeName": "g.node.instance.gt",
+      "Version": "000",
+      "StrategyGtEnumSymbol": "f5961401",
+      "StatusGtEnumSymbol": "69241259"
+    },
+    {
+      "GNodeInstanceId": "2c216e82-886c-4c91-8f0b-df3dbbb6f316",
+      "GNode": {
+        "GNodeId": "59195336-92d6-49d7-93ae-e73b7ca27e6b",
+        "Alias": "d1.isone.ver.keene.violet",
+        "GNodeRegistryAddr": "MONSDN5MXG4VMIOHJNCJJBVASG7HEZQSCEIKJAPEPVI5ZJUMQGXQKSOAYU",
+        "TypeName": "g.node.gt",
+        "Version": "000",
+        "StatusGtEnumSymbol": "a2cfc2f7",
+        "RoleGtEnumSymbol": "8021dcad"
+      },
+      "SupervisorContainerId": "995b0334-9940-424f-8fb1-4745e52ba295",
+      "StartTimeUnixS": 1577854800,
+      "EndTimeUnixS": 0,
+      "AlgoAddress": "CWOLXCXZKLYLORBQQCI4AUHA5CLOLUXRDZEJZI4S3F6WUNVIAF4MX5EW4U",
+      "TypeName": "g.node.instance.gt",
+      "Version": "000",
+      "StrategyGtEnumSymbol": "f5961401",
+      "StatusGtEnumSymbol": "69241259"
+    },
+    {
+      "GNodeInstanceId": "21af51d8-8cba-4395-bb38-8f47c01a53d7",
+      "GNode": {
+        "GNodeId": "11dd4b46-affd-4f2f-9a40-0bd94b6e91b4",
+        "Alias": "d1.isone.ver.keene.lettuce",
+        "GNodeRegistryAddr": "MONSDN5MXG4VMIOHJNCJJBVASG7HEZQSCEIKJAPEPVI5ZJUMQGXQKSOAYU",
+        "TypeName": "g.node.gt",
+        "Version": "000",
+        "StatusGtEnumSymbol": "a2cfc2f7",
+        "RoleGtEnumSymbol": "8021dcad"
+      },
+      "SupervisorContainerId": "995b0334-9940-424f-8fb1-4745e52ba295",
+      "StartTimeUnixS": 1577854800,
+      "EndTimeUnixS": 0,
+      "AlgoAddress": "R3PKD54UOAOW6MTPO7ECZ6YX4COQWN5BJM4OZIHYWFVVGAITM53RGUF6LI",
+      "TypeName": "g.node.instance.gt",
+      "Version": "000",
+      "StrategyGtEnumSymbol": "f5961401",
+      "StatusGtEnumSymbol": "69241259"
+    }
+  ],
+  "AliasWithKeyList": [
+    "d1.isone.ver.keene.holly",
+    "d1.isone.ver.keene.juniper",
+    "d1.isone.ver.keene.violet",
+    "d1.isone.ver.keene.lettuce"
+  ],
+  "KeyList": [
+    "K6iB3AHmzSQ8wDE91QdUfaheDMEtf2WJUMYeeRptKxHiTxG3HC+iKpngXmi82y2r9uVPYwTI5aGiMhdXmPRxcQ==",
+    "QfKe/7kzD71nhYGfITlSV/DFYGvC4sc5IEa8ieGsgirC9sBaSJT0O1+mdPOK3/wzZAqy/dRVIg58Uh3ucSIUSw==",
+    "UHDv5NTx3pz26XZwpbjwKxmdnYzksEuOmbTbvzgkQbYVnLuK+VLwt0QwgJHAUODoluXS8R5InKOS2X1qNqgBeA==",
+    "pMpo89JUKfRE+IvXXW/dsAkns0FXpxagXtQf4m6sXIeO3qH3lHAdbzJvd8gs+xfgnQs3oUs47KD4sWtTARNndw=="
+  ],
+  "TypeName": "super.starter",
+  "Version": "000"
+}

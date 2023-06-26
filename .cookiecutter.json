@@ -1,0 +1,14 @@
+{
+  "_output_dir": "/Users/jess/Coding/GridWorks/Platform",
+  "_template": "gh:cjolowicz/cookiecutter-hypermodern-python",
+  "author": "gridworks",
+  "copyright_year": "2023",
+  "development_status": "Development Status :: 2 - Pre-Alpha",
+  "email": "gridworks@gridworks-consulting.com",
+  "friendly_name": "GridWorks Price Service",
+  "github_user": "thegridelectric",
+  "license": "MIT",
+  "package_name": "gwprice",
+  "project_name": "gridworks-ps",
+  "version": "0.0.0"
+}

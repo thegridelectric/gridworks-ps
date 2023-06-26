@@ -1,0 +1,15 @@
+﻿HouseType,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
+GNodeAlias,d1.isone.ver.keene.holly,d1.isone.ver.keene.juniper,d1.isone.ver.keene.kale,d1.isone.ver.keene.lettuce,d1.isone.ver.keene.mushroom,d1.isone.ver.keene.nettle,d1.isone.ver.keene.orange,d1.isone.ver.keene.pine,d1.isone.ver.keene.quinoa,d1.isone.ver.keene.rose,d1.isone.ver.keene.thistle,d1.isone.ver.keene.umbrella,d1.isone.ver.keene.violet,d1.isone.ver.keene.wasabi,d1.isone.ver.keene.yarrow,d1.isone.ver.keene.zinnia,d1.isone.ver.keene.apple,d1.isone.ver.keene.beet
+BetaOT (WH/DegF),158,320,158,200,100,300,158,320,158,200,100,300,158,320,158,200,100,300
+House Heat Capacity (kWH/Degf),4,8,4,8,3,6,4,8,4,8,3,6,4,8,4,8,3,6
+AMBIENT_POWER_IN_KW ,1,1.25,1.25,1,1,1.1,1,1.25,1.25,1,1,1.1,1,1.25,1.25,1,1,1.1
+ANNUAL_HVAC_KWH_TH,28125,62288,28125,37280,15318,58984,28125,62288,28125,37280,15318,58984,28125,62288,28125,37280,15318,58984
+,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,
+STORE_SIZE_GALLONS ,240,360,120,240,120,240,240,360,120,240,120,240,240,360,120,240,120,240
+RATED_HEATPUMP_ELECTRICITY_KW,5.5,11,11,11,5.5,11,5.5,11,11,11,5.5,11,5.5,11,11,11,5.5,11
+STORE_MAX_POWER_KW ,13.5,22.5,22.5,18,13.5,23.5,13.5,22.5,22.5,18,13.5,23.5,13.5,22.5,22.5,18,13.5,23.5
+SYSTEM_MAX_HEAT_OUTPUT_DELTA_TEMP_F,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20
+SYSTEM_MAX_HEAT_OUTPUT_GPM,4,8,4,6,3,8,4,8,4,6,3,8,4,8,4,6,3,8
+SYSTEM_MAX_HEAT_OUTPUT_SWT_F ,160,160,160,160,160,160,170,170,170,170,170,170,140,140,140,140,140,140
+SYSTEM_MAX_HEAT_OUTPUT,11.68,23.35,11.68,17.51,8.76,23.35,11.68,23.35,11.68,17.51,8.76,23.35,11.68,23.35,11.68,17.51,8.76,23.35
