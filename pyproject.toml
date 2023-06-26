@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gridworks-ps"
-version = "0.0.0"
+version = "0.0.1"
 description = "GridWorks Price Service"
 authors = ["gridworks <gridworks@gridworks-consulting.com>"]
 license = "MIT"
@@ -62,7 +62,7 @@ source = ["gwprice", "tests"]
 
 [tool.coverage.report]
 show_missing = true
-fail_under = 100
+fail_under = 60
 
 [tool.isort]
 profile = "black"

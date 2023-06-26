@@ -21,15 +21,14 @@
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [black]: https://github.com/psf/black
 
-This is the [GridWorks](https://gridworks.readthedocs.io/) repository for a simple open-source 
+This is the [GridWorks](https://gridworks.readthedocs.io/) repository for a simple open-source
 [PriceService](https://gridworks.readthedocs.io/en/latest/price-service.html) - that is, a service
 for providing forecasts for various electricity markets. This includes wholesale markets for electrical
 energy and ancillary services run by grid operators like [Iso-ne](https://www.iso-ne.com/isoexpress/web/charts) (The US New England
 grid operator) and [Miso](https://www.misoenergy.org/markets-and-operations/real-time--market-data/markets-displays/)
-(The US MidWest grid operator). As GridWorks [MarketMakers](https://gridworks.readthedocs.io/en/latest/market-maker.html) 
-begin providing market clearing for lower voltage  constraints, this repo will also provide a some simple
+(The US MidWest grid operator). As GridWorks [MarketMakers](https://gridworks.readthedocs.io/en/latest/market-maker.html)
+begin providing market clearing for lower voltage constraints, this repo will also provide a some simple
 template forecasting mechanisms for these new markets.
-
 
 To explore the rest of GridWorks, visit the [GridWorks docs](https://gridworks.readthedocs.io/en/latest/).
 
