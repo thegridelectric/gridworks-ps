@@ -1,7 +1,7 @@
 ﻿MpAlias,csv.distp.sync.1_0_0
 PNodeAlias,w.isone.stetson
 MethodAlias,gw.me.versant.a1.res.ets
-Comment, Versant Power Residential Electric Thermal Storage Service Rate Time-of-Use
+Comment, Versant Power Residential Electric Thermal Storage Service Rate Time-of-Use. See https://github.com/thegridelectric/gridworks-ps/tree/dev/docs/enums/distribution_tariff/VersantA1StorageHeatTariff
 StartYearUtc,2020
 StartMonthUtc,1
 StartDayUtc,1
