@@ -1,6 +1,5 @@
 import csv
 import datetime
-import uuid
 from typing import Any
 from typing import Dict
 from typing import List
@@ -8,27 +7,13 @@ from typing import NamedTuple
 from typing import Optional
 from typing import Tuple
 
+import gridworks.property_format as property_format
 import numpy as np
-import pendulum
-from gridworks.errors import DcError
 from gridworks.errors import SchemaError
 
-import gwatn.types.hack_property_format as property_format
-from gwatn.types.hack_test_dummy import TEST_DUMMY_AGENT
-from gwatn.types.hack_utils import camel_to_snake
-from gwatn.types.hack_utils import log_style_utc_date_w_millis
-from gwatn.types.hack_utils import snake_to_camel
-from gwatn.types.ps_electricityprices_gnode.r_eprt_sync.r_eprt_sync_1_0_0 import (
-    Payload as REprtSync100Payload,
-)
-from gwatn.types.ps_electricityprices_gnode.r_eprt_sync.r_eprt_sync_1_0_0 import (
-    R_Eprt_Sync_1_0_0,
-)
 
-
-class Payload(NamedTuple):
-    MpAlias: str
-    WorldInstanceAlias: str
+class CsvEprtSync(NamedTuple):
+    TypeName: str
     PNodeAlias: str
     MethodAlias: str
     Comment: str
@@ -43,7 +28,6 @@ class Payload(NamedTuple):
     PriceUid: str
     Header: str
     Prices: list
-    MessageId: str
 
     def asdict(self):
         d = self._asdict()
@@ -56,29 +40,14 @@ class Payload(NamedTuple):
     def passes_derived_validations(self) -> Tuple[bool, Optional[List[str]]]:
         is_valid = True
         errors = []
-        if self.MpAlias != "csv.eprt.sync.1_0_0":
+        if self.TypeName != "csv.eprt.sync":
             is_valid = False
             errors.append(
-                f"Payload requires MpAlias of 'csv.eprt.sync.1_0_0', not {self.MpAlias}."
-            )
-        if not isinstance(self.WorldInstanceAlias, str):
-            is_valid = False
-            errors.append(
-                f"WorldInstanceAlias {self.WorldInstanceAlias} must have type str."
-            )
-        if not property_format.is_world_instance_alias_format(self.WorldInstanceAlias):
-            is_valid = False
-            errors.append(
-                f"WorldInstanceAlias {self.WorldInstanceAlias} must have format WorldInstanceAliasFormat"
+                f"Payload requires TypeName of 'csv.eprt.sync', not {self.TypeName}."
             )
         if not isinstance(self.PNodeAlias, str):
             is_valid = False
             errors.append(f"PNodeAlias must have type str.")
-        if not property_format.is_recognized_p_node_alias(self.PNodeAlias):
-            is_valid = False
-            errors.append(
-                f"PNodeAlias {self.PNodeAlias} must have format RecognizedPNodeAlias."
-            )
         if not isinstance(self.StartYearUtc, int):
             is_valid = False
             errors.append(f"StartYearUtc must have type int.")
@@ -114,11 +83,6 @@ class Payload(NamedTuple):
         if not isinstance(self.CurrencyUnit, str):
             is_valid = False
             errors.append(f"CurrencyUnit {self.CurrencyUnit} must have type str.")
-        if not property_format.is_recognized_currency_unit(self.CurrencyUnit):
-            is_valid = False
-            errors.append(
-                f"CurrencyUnit {self.CurrencyUnit} must have format RecognizedCurrencyUnit."
-            )
         if not isinstance(self.PriceUid, str):
             is_valid = False
             errors.append(f"PriceUid {self.PriceUid} must have type str.")
@@ -127,21 +91,12 @@ class Payload(NamedTuple):
             errors.append(
                 f"PriceUid {self.PriceUid} must have format UuidCanonicalTextual."
             )
-        if not isinstance(self.MessageId, str):
-            is_valid = False
-            errors.append(f"MessageId {self.MessageId} must have type str.")
-        if not property_format.is_uuid_canonical_textual(self.MessageId):
-            is_valid = False
-            errors.append(
-                f"MessageId {self.MessageId} must have format UuidCanonicalTextual."
-            )
-        # TODO: add rest of validations
 
         return is_valid, errors
 
 
-class Csv_Eprt_Sync_1_0_0:
-    mp_alias = "csv.eprt.sync.1_0_0"
+class CsvEprtSync_Maker:
+    type_name = "csv.eprt.sync"
 
     @classmethod
     def payload_is_valid(
@@ -154,9 +109,8 @@ class Csv_Eprt_Sync_1_0_0:
         except ValueError:
             pass  # This will get caught in is_valid() check below
         try:
-            p = Payload(
-                MpAlias=payload_as_dict["MpAlias"],
-                WorldInstanceAlias=payload_as_dict["WorldInstanceAlias"],
+            p = CsvEprtSync(
+                TypeName=payload_as_dict["TypeName"],
                 PNodeAlias=payload_as_dict["PNodeAlias"],
                 MethodAlias=payload_as_dict["MethodAlias"],
                 Comment=payload_as_dict["Comment"],
@@ -171,30 +125,29 @@ class Csv_Eprt_Sync_1_0_0:
                 PriceUid=payload_as_dict["PriceUid"],
                 Header=payload_as_dict["Header"],
                 Prices=payload_as_dict["Prices"],
-                MessageId=payload_as_dict["MessageId"],
             )
         except TypeError:
             errors = [TypeError]
             return False, errors
         return p.is_valid()
 
-    def __init__(self, real_time_electricity_price_csv):
-        file = real_time_electricity_price_csv
+    def __init__(self, elec_price_file):
+        file = elec_price_file
         self.errors = []
-        self.payload = None
+        self.tuple: Optional[CsvEprtSync] = None
         first_data_row = 14
         prices = np.array([])
         uniform_slice_duration_hrs = np.array([])
-        with open(real_time_electricity_price_csv, newline="") as csvfile:
+        with open(elec_price_file, newline="") as csvfile:
             reader = csv.reader(csvfile, delimiter=",")
             line_idx = 0
             for row in reader:
                 if line_idx == 0:
                     property = row[0].replace("\ufeff", "")
                     mp_alias = row[1]
-                    if property != "MpAlias":
+                    if property != "TypeName":
                         raise Exception(
-                            f"Csv 0,0 must be MpAlias, instead it is {property}"
+                            f"Csv 0,0 must be TypeName, instead it is {property}"
                         )
                 if line_idx == 1:
                     property = row[0]
@@ -298,9 +251,8 @@ class Csv_Eprt_Sync_1_0_0:
                         raise Exception(f"Missing a price in row {line_idx+1}")
                 line_idx += 1
 
-        p = Payload(
-            MpAlias=mp_alias,
-            WorldInstanceAlias="dw1__1",
+        p = CsvEprtSync(
+            TypeName=mp_alias,
             PNodeAlias=p_node_alias,
             MethodAlias=method_alias,
             Comment=comment,
@@ -315,7 +267,6 @@ class Csv_Eprt_Sync_1_0_0:
             PriceUid=price_uid,
             Header=header,
             Prices=list(prices),
-            MessageId=str(uuid.uuid4()),
         )
 
         is_valid, errors = p.is_valid()
@@ -323,31 +274,7 @@ class Csv_Eprt_Sync_1_0_0:
             self.errors = errors
             print(errors)
             raise SchemaError(
-                f"Failed to create payload due to these errors:{errors}. Input file is {real_time_electricity_price_csv}"
+                f"Failed to create payload due to these errors:{errors}. Input file is {elec_price_file}"
             )
         else:
-            self.payload = p
-
-    def paired_rabbit_payload(self, agent=TEST_DUMMY_AGENT) -> REprtSync100Payload:
-        start_utc = pendulum.datetime(
-            year=self.payload.StartYearUtc,
-            month=self.payload.StartMonthUtc,
-            day=self.payload.StartDayUtc,
-            hour=self.payload.StartHourUtc,
-            minute=self.payload.StartMinuteUtc,
-        )
-
-        return R_Eprt_Sync_1_0_0(
-            agent=agent,
-            prices=self.payload.Prices,
-            uniform_slice_duration_hrs=self.payload.UniformSliceDurationHrs,
-            method_alias=self.payload.MethodAlias,
-            start_utc=start_utc,
-            currency_unit=self.payload.CurrencyUnit,
-            p_node_alias=self.payload.PNodeAlias,
-            price_uid=self.payload.PriceUid,
-            timezone_string=self.payload.TimezoneString,
-            comment=self.payload.Comment,
-        ).payload
-
-
+            self.tuple = p

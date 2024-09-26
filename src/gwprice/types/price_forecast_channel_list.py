@@ -14,16 +14,13 @@ from gwprice.property_format import (
 
 
 class PriceForecastChannelList(BaseModel):
-    """
-    
-    """
     from_g_node_alias: LeftRightDot
     channel_list: List[HourlyPriceForecastChannel]
     type_name: Literal["price.forecast.channel.list"] = "price.forecast.channel.list"
     version: Literal["000"] = "000"
 
     model_config = ConfigDict(
-        alias_generator=snake_to_pascal, frozen=True, populate_by_name=True,
+        alias_generator=snake_to_pascal, frozen=True, populate_by_name=True, use_enum_values=True,
     )
 
     @classmethod

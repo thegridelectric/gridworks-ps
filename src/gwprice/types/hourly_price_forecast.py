@@ -6,7 +6,6 @@ from typing import Any, Dict, List, Literal
 from gw.errors import GwTypeError
 from gw.utils import recursively_pascal, snake_to_pascal
 from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
-, StrictInt
 
 from gwprice.types.hourly_price_forecast_channel import HourlyPriceForecastChannel
 from gwprice.property_format import (
@@ -17,19 +16,16 @@ from gwprice.property_format import (
 
 
 class HourlyPriceForecast(BaseModel):
-    """
-    Broadcast by the price service.
-    """
     from_g_node_alias: LeftRightDot
     channel: HourlyPriceForecastChannel
     start_unix_s: UTCSeconds
-    prices: List[]
+    prices: List[float]
     price_uid: UUID4Str
     type_name: Literal["hourly.price.forecast"] = "hourly.price.forecast"
     version: Literal["000"] = "000"
 
     model_config = ConfigDict(
-        alias_generator=snake_to_pascal, frozen=True, populate_by_name=True,
+        alias_generator=snake_to_pascal, frozen=True, populate_by_name=True, use_enum_values=True,
     )
 
     @field_validator("start_unix_s")

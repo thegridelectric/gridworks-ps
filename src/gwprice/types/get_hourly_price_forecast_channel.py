@@ -10,7 +10,6 @@ from pydantic import BaseModel, ConfigDict, ValidationError, model_validator, Po
 from gwprice.enums import MarketCategory
 from gwprice.property_format import (
     LeftRightDot,
-    UUID4Str,
 )
 
 
@@ -28,7 +27,7 @@ class GetHourlyPriceForecastChannel(BaseModel):
     version: Literal["000"] = "000"
 
     model_config = ConfigDict(
-        alias_generator=snake_to_pascal, frozen=True, populate_by_name=True,
+        alias_generator=snake_to_pascal, frozen=True, populate_by_name=True, use_enum_values=True
     )
 
     @model_validator(mode="before")

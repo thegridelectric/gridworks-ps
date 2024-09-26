@@ -5,8 +5,7 @@ from typing import Any, Dict, Literal
 
 from gw.errors import GwTypeError
 from gw.utils import recursively_pascal, snake_to_pascal
-from pydantic import BaseModel, ConfigDict, ValidationError, model_validator, PositiveInt
-, StrictInt
+from pydantic import BaseModel, ConfigDict, ValidationError, PositiveInt
 
 from gwprice.enums import MarketCategory
 from gwprice.enums import MarketPriceUnit
@@ -16,9 +15,6 @@ from gwprice.property_format import (
 
 
 class HourlyPriceForecastChannel(BaseModel):
-    """
-    
-    """
     name: LeftRightDot
     p_node_alias: LeftRightDot
     category: MarketCategory
@@ -29,19 +25,9 @@ class HourlyPriceForecastChannel(BaseModel):
     version: Literal["000"] = "000"
 
     model_config = ConfigDict(
-        alias_generator=snake_to_pascal, frozen=True, populate_by_name=True,
+        alias_generator=snake_to_pascal, frozen=True, populate_by_name=True, use_enum_values=True,
     )
 
-    @model_validator(mode="before")
-    @classmethod
-    def translate_enums(cls, data: dict) -> dict:
-        if "CategoryGtEnumSymbol" in data:
-            data["Category"] = MarketCategory.symbol_to_value(data["CategoryGtEnumSymbol"])
-            del data["CategoryGtEnumSymbol"]
-        if "UnitGtEnumSymbol" in data:
-            data["Unit"] = MarketPriceUnit.symbol_to_value(data["UnitGtEnumSymbol"])
-            del data["UnitGtEnumSymbol"]
-        return data
 
     @classmethod
     def from_dict(cls, d: dict) -> "HourlyPriceForecastChannel":
@@ -71,6 +57,12 @@ class HourlyPriceForecastChannel(BaseModel):
         d["Category"] = self.category.value
         d["Unit"] = self.unit.value
         return d
+
+    def to_sql_dict(self) -> Dict[str, Any]:
+            d = self.model_dump()
+            d.pop("type_name", None)
+            d.pop("version", None)
+            return d
 
     def to_type(self) -> bytes:
         """
