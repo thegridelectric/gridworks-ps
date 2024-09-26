@@ -5,32 +5,32 @@ from typing import Optional
 from gw.enums import GwStrEnum
 
 
-class EnergySupplyType(GwStrEnum):
+class MarketCategory(GwStrEnum):
     """
     
 
-    Enum energy.supply.type version 000 in the GridWorks Type registry.
+    Enum market.category version 000 in the GridWorks Type registry.
 
     Used by multiple Application Shared Languages (ASLs). For more information:
       - [ASLs](https://gridworks-type-registry.readthedocs.io/en/latest/)
-      - [Global Authority](https://gridworks-type-registry.readthedocs.io/en/latest/enums.html#energysupplytype)
+      - [Global Authority](https://gridworks-type-registry.readthedocs.io/en/latest/enums.html#marketcategory)
 
     Values (with symbols in parens):
-      - Unknown (00000000)
-      - StandardOffer (cb18f937)
-      - RealtimeLocalLmp (e9dc99a6)
+      - Energy (00000000)
+      - Distribution (33577a33)
+      - Regulation (8d967d56)
     """
 
-    Unknown = auto()
-    StandardOffer = auto()
-    RealtimeLocalLmp = auto()
+    Energy = auto()
+    Distribution = auto()
+    Regulation = auto()
 
     @classmethod
-    def default(cls) -> "EnergySupplyType":
+    def default(cls) -> "MarketCategory":
         """
-        Returns default value (in this case Unknown)
+        Returns default value (in this case Energy)
         """
-        return cls.Unknown
+        return cls.Energy
 
     @classmethod
     def values(cls) -> List[str]:
@@ -68,9 +68,9 @@ class EnergySupplyType(GwStrEnum):
     @classmethod
     def enum_name(cls) -> str:
         """
-        The name in the GridWorks Type Registry (energy.supply.type)
+        The name in the GridWorks Type Registry (market.category)
         """
-        return "energy.supply.type"
+        return "market.category"
 
     @classmethod
     def enum_version(cls) -> str:
@@ -90,7 +90,7 @@ class EnergySupplyType(GwStrEnum):
         Returns:
             str: The encoded value associated to that symbol. If the symbol is not
             recognized - which could happen if the actor making the symbol is using
-            a later version of this enum, returns the default value of "Unknown".
+            a later version of this enum, returns the default value of "Energy".
         """
         if symbol not in symbol_to_value.keys():
             return cls.default().value
@@ -99,7 +99,7 @@ class EnergySupplyType(GwStrEnum):
     @classmethod
     def value_to_symbol(cls, value: str) -> str:
         """
-        Provides the encoding symbol for a EnergySupplyType enum to send in seriliazed messages.
+        Provides the encoding symbol for a MarketCategory enum to send in seriliazed messages.
 
         Args:
             symbol (str): The candidate value.
@@ -121,21 +121,21 @@ class EnergySupplyType(GwStrEnum):
         """
         return [
             "00000000",
-            "cb18f937",
-            "e9dc99a6",
+            "33577a33",
+            "8d967d56",
         ]
 
 
 symbol_to_value = {
-    "00000000": "Unknown",
-    "cb18f937": "StandardOffer",
-    "e9dc99a6": "RealtimeLocalLmp",
+    "00000000": "Energy",
+    "33577a33": "Distribution",
+    "8d967d56": "Regulation",
 }
 
 value_to_symbol = {value: key for key, value in symbol_to_value.items()}
 
 value_to_version = {
-    "Unknown": "000",
-    "StandardOffer": "000",
-    "RealtimeLocalLmp": "000",
+    "Energy": "000",
+    "Distribution": "000",
+    "Regulation": "000",
 }

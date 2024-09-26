@@ -19,9 +19,12 @@ classifiers = [
 Changelog = "https://github.com/thegridelectric/gridworks-ps/releases"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-gridworks = "^0.2.7"
-
+python = ">=3.12,<4.0"
+gridworks-base = "0.1.8"
+sqlalchemy = "^2.0.31"
+psycopg2-binary = "^2.9.9"
+alembic = "^1.13.2"
+deepdiff = "^8.0.1"
 
 [tool.poetry.dev-dependencies]
 Pygments = ">=2.10.0"
