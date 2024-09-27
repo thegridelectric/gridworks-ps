@@ -28,17 +28,18 @@ on these ideas:
   - [GridWorks Enums](https://gridwork-type-registry.readthedocs.io/en/latest/types.html)
   - [GridWorks Types](https://gridwork-type-registry.readthedocs.io/en/latest/types.html)
   - [ASLs](https://gridwork-type-registry.readthedocs.io/en/latest/asls.html)
- """
+"""
 
 from gwprice.enums.distribution_tariff import DistributionTariff
 from gwprice.enums.energy_supply_type import EnergySupplyType
 from gwprice.enums.market_category import MarketCategory
 from gwprice.enums.market_price_unit import MarketPriceUnit
-
+from gwprice.enums.market_type_name import MarketTypeName
 
 __all__ = [
     "DistributionTariff",  # [distribution.tariff.000](https://gridworks-type-registry.readthedocs.io/en/latest/enums.html#distributiontariff)
     "EnergySupplyType",  # [energy.supply.type.000](https://gridworks-type-registry.readthedocs.io/en/latest/enums.html#energysupplytype)
     "MarketCategory",  # [market.category.000](https://gridworks-type-registry.readthedocs.io/en/latest/enums.html#marketcategory)
     "MarketPriceUnit",  # [market.price.unit.000](https://gridworks-type-registry.readthedocs.io/en/latest/enums.html#marketpriceunit)
+    "MarketTypeName",  # [market.type.name.000](https://gridworks-type-registry.readthedocs.io/en/latest/enums.html#markettypename)
 ]

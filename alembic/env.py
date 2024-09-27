@@ -15,7 +15,7 @@ import dotenv
 
 dotenv.load_dotenv()
 
-DATABASE_URL = os.getenv("GJK_DB_URL")
+DATABASE_URL = os.getenv("GWPRICE_DB_URL")
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.
@@ -28,7 +28,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from gwprice.models.message import Base
+from gwprice.models.hourly_price_forecast_channels import Base
 
 # from gjk.models import ReadingSql
 

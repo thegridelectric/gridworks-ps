@@ -1,13 +1,12 @@
 from enum import auto
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 from gw.enums import GwStrEnum
 
 
 class MarketCategory(GwStrEnum):
     """
-    
+
 
     Enum market.category version 000 in the GridWorks Type registry.
 

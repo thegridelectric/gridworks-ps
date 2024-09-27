@@ -13,13 +13,12 @@ DEFAULT_ENV_FILE = ".env"
 class Settings(BaseSettings):
     rabbit: RabbitBrokerClient = RabbitBrokerClient()
     db_url: SecretStr = SecretStr(
-        "postgresql://persister:PASSWD@journaldb.electricity.works/journaldb"
+        "postgresql://gwprice:PASSWD@journaldb.electricity.works/pricedb"
     )
     db_pass: SecretStr = SecretStr("Passwd")
-    ops_genie_api_key: SecretStr = SecretStr("OpsGenieAPIKey")
 
     model_config = ConfigDict(
-        env_prefix="gjk_",
+        env_prefix="gwprice_",
         env_nested_delimiter="__",
         extra="ignore",
     )

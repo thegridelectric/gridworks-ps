@@ -1,76 +1,40 @@
 """Type hourly.price.forecast.channel, version 000"""
 
-import json
-from typing import Any, Dict, Literal
+from typing import Literal
 
-from gw.errors import GwTypeError
-from gw.utils import recursively_pascal, snake_to_pascal
-from pydantic import BaseModel, ConfigDict, ValidationError, PositiveInt
+from pydantic import PositiveInt, field_validator
 
-from gwprice.enums import MarketCategory
-from gwprice.enums import MarketPriceUnit
+from gwprice.my_forecast_methods import MyForecastMethods
+from gwprice.my_markets import MyMarkets
 from gwprice.property_format import (
     LeftRightDot,
+    MarketName,
 )
+from gwprice.types.gw_base import GwBase
 
 
-class HourlyPriceForecastChannel(BaseModel):
+class HourlyPriceForecastChannel(GwBase):
     name: LeftRightDot
-    p_node_alias: LeftRightDot
-    category: MarketCategory
+    market_name: MarketName
     total_hours: PositiveInt
     method_alias: LeftRightDot
-    unit: MarketPriceUnit
-    type_name: Literal["hourly.price.forecast.channel"] = "hourly.price.forecast.channel"
+    type_name: Literal["hourly.price.forecast.channel"] = (
+        "hourly.price.forecast.channel"
+    )
     version: Literal["000"] = "000"
 
-    model_config = ConfigDict(
-        alias_generator=snake_to_pascal, frozen=True, populate_by_name=True, use_enum_values=True,
-    )
-
-
+    @field_validator("market_name")
     @classmethod
-    def from_dict(cls, d: dict) -> "HourlyPriceForecastChannel":
-        if not recursively_pascal(d):
-                raise GwTypeError(f"dict is not recursively pascal case! {d}")
-        try:
-            t = cls(**d)
-        except ValidationError as e:
-            raise GwTypeError(f"Pydantic validation error: {e}") from e
-        return t
+    def check_market_name(cls, v: int) -> str:
+        my_market_names = [market.name for market in MyMarkets]
+        if v not in my_market_names:
+            raise ValueError(f"market_name {v} must be in {MyMarkets}")
+        return v
 
+    @field_validator("method_alias")
     @classmethod
-    def from_type(cls, b: bytes) -> "HourlyPriceForecastChannel":
-        try:
-            d = json.loads(b)
-        except TypeError as e:
-            raise GwTypeError("Type must be string or bytes!") from e
-        if not isinstance(d, dict):
-            raise GwTypeError(f"Deserializing must result in dict!\n <{b}>")
-        return cls.from_dict(d)
-
-    def to_dict(self) -> Dict[str, Any]:
-        """
-        Handles lists of enums differently than model_dump
-        """
-        d = self.model_dump(exclude_none=True, by_alias=True)
-        d["Category"] = self.category.value
-        d["Unit"] = self.unit.value
-        return d
-
-    def to_sql_dict(self) -> Dict[str, Any]:
-            d = self.model_dump()
-            d.pop("type_name", None)
-            d.pop("version", None)
-            return d
-
-    def to_type(self) -> bytes:
-        """
-        Serialize to the hourly.price.forecast.channel.000 representation designed to send in a message.
-        """
-        json_string = json.dumps(self.to_dict())
-        return json_string.encode("utf-8")
-
-    @classmethod
-    def type_name_value(cls) -> str:
-        return "hourly.price.forecast.channel"
+    def check_method_alias(cls, v: int) -> str:
+        my_method_aliases = [method.alias for method in MyForecastMethods]
+        if v not in my_method_aliases:
+            raise ValueError(f"market_name {v} must be in {MyForecastMethods}")
+        return v

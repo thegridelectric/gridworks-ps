@@ -4,32 +4,48 @@ from typing import List, Optional
 from gw.enums import GwStrEnum
 
 
-class EnergySupplyType(GwStrEnum):
+class MarketTypeName(GwStrEnum):
     """
+    Categorizes different markets run by MarketMaker
 
-
-    Enum energy.supply.type version 000 in the GridWorks Type registry.
+    Enum market.type.name version 000 in the GridWorks Type registry.
 
     Used by multiple Application Shared Languages (ASLs). For more information:
       - [ASLs](https://gridworks-type-registry.readthedocs.io/en/latest/)
-      - [Global Authority](https://gridworks-type-registry.readthedocs.io/en/latest/enums.html#energysupplytype)
+      - [Global Authority](https://gridworks-type-registry.readthedocs.io/en/latest/enums.html#markettypename)
 
     Values (with symbols in parens):
-      - Unknown (00000000)
-      - StandardOffer (cb18f937)
-      - RealtimeLocalLmp (e9dc99a6)
+      - unknown (00000000): Default unknown
+      - rt5gate5 (d20b81e4): Real-time energy, 5 minute MarketSlots, gate closing 5 minutes prior
+        to start
+      - rt60gate5 (b36cbfb4): Real-time energy, 60 minute MarketSlots, gate closing 5 minutes prior
+        to start
+      - da60 (94a3fe9b): Day-ahead energy, 60 minute MarketSlots
+      - rt60gate30 (5f335bdb): Real-time energy, 60 minute MarketSlots, gate closing 30 minutes prior
+        to start
+      - rt15gate5 (01a84101): Real-time energy, 15 minute MarketSlots, gate closing 5 minutes prior
+        to start
+      - rt30gate5 (e997ccfb): Real-time energy, 30 minute MarketSlots, gate closing 5 minutes prior
+        to start
+      - rt60gate30b (618f9c0a): Real-time energy, 30 minute MarketSlots, gate closing 5 minutes prior
+        to start, QuantityUnit AvgkW
     """
 
-    Unknown = auto()
-    StandardOffer = auto()
-    RealtimeLocalLmp = auto()
+    unknown = auto()
+    rt5gate5 = auto()
+    rt60gate5 = auto()
+    da60 = auto()
+    rt60gate30 = auto()
+    rt15gate5 = auto()
+    rt30gate5 = auto()
+    rt60gate30b = auto()
 
     @classmethod
-    def default(cls) -> "EnergySupplyType":
+    def default(cls) -> "MarketTypeName":
         """
-        Returns default value (in this case Unknown)
+        Returns default value (in this case unknown)
         """
-        return cls.Unknown
+        return cls.unknown
 
     @classmethod
     def values(cls) -> List[str]:
@@ -67,9 +83,9 @@ class EnergySupplyType(GwStrEnum):
     @classmethod
     def enum_name(cls) -> str:
         """
-        The name in the GridWorks Type Registry (energy.supply.type)
+        The name in the GridWorks Type Registry (market.type.name)
         """
-        return "energy.supply.type"
+        return "market.type.name"
 
     @classmethod
     def enum_version(cls) -> str:
@@ -89,7 +105,7 @@ class EnergySupplyType(GwStrEnum):
         Returns:
             str: The encoded value associated to that symbol. If the symbol is not
             recognized - which could happen if the actor making the symbol is using
-            a later version of this enum, returns the default value of "Unknown".
+            a later version of this enum, returns the default value of "unknown".
         """
         if symbol not in symbol_to_value.keys():
             return cls.default().value
@@ -98,7 +114,7 @@ class EnergySupplyType(GwStrEnum):
     @classmethod
     def value_to_symbol(cls, value: str) -> str:
         """
-        Provides the encoding symbol for a EnergySupplyType enum to send in seriliazed messages.
+        Provides the encoding symbol for a MarketTypeName enum to send in seriliazed messages.
 
         Args:
             symbol (str): The candidate value.
@@ -120,21 +136,36 @@ class EnergySupplyType(GwStrEnum):
         """
         return [
             "00000000",
-            "cb18f937",
-            "e9dc99a6",
+            "d20b81e4",
+            "b36cbfb4",
+            "94a3fe9b",
+            "5f335bdb",
+            "01a84101",
+            "e997ccfb",
+            "618f9c0a",
         ]
 
 
 symbol_to_value = {
-    "00000000": "Unknown",
-    "cb18f937": "StandardOffer",
-    "e9dc99a6": "RealtimeLocalLmp",
+    "00000000": "unknown",
+    "d20b81e4": "rt5gate5",
+    "b36cbfb4": "rt60gate5",
+    "94a3fe9b": "da60",
+    "5f335bdb": "rt60gate30",
+    "01a84101": "rt15gate5",
+    "e997ccfb": "rt30gate5",
+    "618f9c0a": "rt60gate30b",
 }
 
 value_to_symbol = {value: key for key, value in symbol_to_value.items()}
 
 value_to_version = {
-    "Unknown": "000",
-    "StandardOffer": "000",
-    "RealtimeLocalLmp": "000",
+    "unknown": "000",
+    "rt5gate5": "000",
+    "rt60gate5": "000",
+    "da60": "000",
+    "rt60gate30": "000",
+    "rt15gate5": "000",
+    "rt30gate5": "000",
+    "rt60gate30b": "000",
 }

@@ -1,14 +1,9 @@
 import csv
 import datetime
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import NamedTuple
-from typing import Optional
-from typing import Tuple
+from typing import Any, Dict, List, NamedTuple, Optional, Tuple
 
-import gridworks.property_format as property_format
 import numpy as np
+from gridworks import property_format
 from gridworks.errors import SchemaError
 
 
@@ -47,22 +42,22 @@ class CsvEprtSync(NamedTuple):
             )
         if not isinstance(self.PNodeAlias, str):
             is_valid = False
-            errors.append(f"PNodeAlias must have type str.")
+            errors.append("PNodeAlias must have type str.")
         if not isinstance(self.StartYearUtc, int):
             is_valid = False
-            errors.append(f"StartYearUtc must have type int.")
+            errors.append("StartYearUtc must have type int.")
         if not isinstance(self.StartMonthUtc, int):
             is_valid = False
-            errors.append(f"StartMonthUtc must have type int.")
+            errors.append("StartMonthUtc must have type int.")
         if not isinstance(self.StartDayUtc, int):
             is_valid = False
-            errors.append(f"StartDayUtc must have type int.")
+            errors.append("StartDayUtc must have type int.")
         if not isinstance(self.StartHourUtc, int):
             is_valid = False
-            errors.append(f"StartHourUtc must have type int.")
+            errors.append("StartHourUtc must have type int.")
         if not isinstance(self.StartMinuteUtc, int):
             is_valid = False
-            errors.append(f"StartMinuteUtc must have type int.")
+            errors.append("StartMinuteUtc must have type int.")
         try:
             datetime.datetime(
                 year=self.StartYearUtc,
@@ -76,7 +71,7 @@ class CsvEprtSync(NamedTuple):
             errors.append(e)
         if not isinstance(self.UniformSliceDurationHrs, float):
             is_valid = False
-            errors.append(f"UniformSliceDurationHrs must have type float.")
+            errors.append("UniformSliceDurationHrs must have type float.")
         if not isinstance(self.TimezoneString, str):
             is_valid = False
             errors.append(f"TimezoneString {self.TimezoneString} must have type str.")
@@ -248,7 +243,7 @@ class CsvEprtSync_Maker:
                     try:
                         prices = np.append(prices, float(row[0]))
                     except ValueError:
-                        raise Exception(f"Missing a price in row {line_idx+1}")
+                        raise Exception(f"Missing a price in row {line_idx + 1}")
                 line_idx += 1
 
         p = CsvEprtSync(

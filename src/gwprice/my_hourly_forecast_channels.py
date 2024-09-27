@@ -1,0 +1,12 @@
+from typing import List
+
+from gwprice.types.hourly_price_forecast_channel import HourlyPriceForecastChannel
+
+MyForecastChannels: List[HourlyPriceForecastChannel] = [
+    HourlyPriceForecastChannel(
+        name="keene.rt60.da1.48",
+        market_name="e.rt60gate5.d1.isone.ver.keene",
+        total_hours=48,
+        method_alias="isoneexpress.da.web",
+    )
+]

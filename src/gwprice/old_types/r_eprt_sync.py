@@ -3,11 +3,7 @@
 import datetime
 import time
 import uuid
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import gwatn.types.hack_test_dummy as test_dummy
 from gwatn.errors import *
@@ -122,7 +118,7 @@ class R_Eprt_Sync_1_0_0(HackTypeBase):
         except ValueError:
             pass  # This will get caught in is_valid() check below
         if not isinstance(prices, list):
-            raise SchemaError(f"prices must be a list!!")
+            raise SchemaError("prices must be a list!!")
         try:
             tmp_prices = []
             for elt in prices:

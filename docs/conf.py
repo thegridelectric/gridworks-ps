@@ -1,4 +1,5 @@
 """Sphinx configuration."""
+
 project = "GridWorks Price Service"
 author = "gridworks"
 copyright = "2023, gridworks"
