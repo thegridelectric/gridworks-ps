@@ -7,14 +7,14 @@ MyMarkets: List[Market] = [
     Market(
         name="e.rt60gate5.d1.isone.ver.keene",
         market_type_name=MarketTypeName.rt60gate5,
-        p_node_alias="d1.isone.ver.keene",
+        p_node_alias="hw1.isone.ver.keene",
         category=MarketCategory.Energy,
         unit=MarketPriceUnit.USDPerMWh,
     ),
     Market(
         name="d.rt60gate5.d1.isone.ver.keene",
         market_type_name=MarketTypeName.rt60gate5,
-        p_node_alias="d1.isone.ver.keene",
+        p_node_alias="hw1.isone.ver.keene",
         category=MarketCategory.Distribution,
         unit=MarketPriceUnit.USDPerMWh,
     ),

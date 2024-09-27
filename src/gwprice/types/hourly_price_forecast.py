@@ -5,7 +5,7 @@ from typing import List, Literal
 from pydantic import field_validator, model_validator
 from typing_extensions import Self
 
-from gwprice.my_hourly_forecast_channels import MyForecastChannels
+# from gwprice.my_hourly_forecast_channels import MyForecastChannels
 from gwprice.property_format import (
     LeftRightDot,
     UTCSeconds,
@@ -24,13 +24,13 @@ class HourlyPriceForecast(GwBase):
     type_name: Literal["hourly.price.forecast"] = "hourly.price.forecast"
     version: Literal["000"] = "000"
 
-    @field_validator("channel_name")
-    @classmethod
-    def check_channel_name(cls, v: str) -> str:
-        my_channel_names = [c.name for c in MyForecastChannels]
-        if v not in my_channel_names:
-            raise ValueError(f"channel {v} must be in {MyForecastChannels}")
-        return v
+    # @field_validator("channel_name")
+    # @classmethod
+    # def check_channel_name(cls, v: str) -> str:
+    #     my_channel_names = [c.name for c in MyForecastChannels]
+    #     if v not in my_channel_names:
+    #         raise ValueError(f"channel {v} must be in {MyForecastChannels}")
+    #     return v
 
     @field_validator("start_unix_s")
     @classmethod

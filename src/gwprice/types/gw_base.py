@@ -16,6 +16,7 @@ class GwBase(BaseModel):
         alias_generator=snake_to_pascal,
         frozen=True,
         populate_by_name=True,
+        use_enum_values=True,
     )
 
     @classmethod

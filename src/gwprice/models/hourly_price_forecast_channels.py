@@ -25,7 +25,7 @@ class HourlyPriceForecastChannelSql(Base):
     )
 
     market = relationship("MarketSql", back_populates="hourly_channels")
-    method = relationship("PriceMethodSql", back_populates="hourly_channels")
+    method = relationship("ForecastMethodSql", back_populates="hourly_channels")
     forecasts = relationship("HourlyPriceForecastSql", back_populates="channel")
 
     def to_dict(self):

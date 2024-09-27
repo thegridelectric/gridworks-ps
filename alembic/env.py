@@ -28,7 +28,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from gwprice.models.hourly_price_forecast_channels import Base
+from gwprice.models.p_nodes import Base
 
 # from gjk.models import ReadingSql
 

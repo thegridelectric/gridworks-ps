@@ -2,10 +2,10 @@
 
 from typing import Literal
 
-from pydantic import PositiveInt, field_validator
+from pydantic import PositiveInt
 
-from gwprice.my_forecast_methods import MyForecastMethods
-from gwprice.my_markets import MyMarkets
+# from gwprice.my_forecast_methods import MyForecastMethods
+# from gwprice.my_markets import MyMarkets
 from gwprice.property_format import (
     LeftRightDot,
     MarketName,
@@ -23,18 +23,18 @@ class HourlyPriceForecastChannel(GwBase):
     )
     version: Literal["000"] = "000"
 
-    @field_validator("market_name")
-    @classmethod
-    def check_market_name(cls, v: int) -> str:
-        my_market_names = [market.name for market in MyMarkets]
-        if v not in my_market_names:
-            raise ValueError(f"market_name {v} must be in {MyMarkets}")
-        return v
+    # @field_validator("market_name")
+    # @classmethod
+    # def check_market_name(cls, v: int) -> str:
+    #     my_market_names = [market.name for market in MyMarkets]
+    #     if v not in my_market_names:
+    #         raise ValueError(f"market_name {v} must be in {MyMarkets}")
+    #     return v
 
-    @field_validator("method_alias")
-    @classmethod
-    def check_method_alias(cls, v: int) -> str:
-        my_method_aliases = [method.alias for method in MyForecastMethods]
-        if v not in my_method_aliases:
-            raise ValueError(f"market_name {v} must be in {MyForecastMethods}")
-        return v
+    # @field_validator("method_alias")
+    # @classmethod
+    # def check_method_alias(cls, v: int) -> str:
+    #     my_method_aliases = [method.alias for method in MyForecastMethods]
+    #     if v not in my_method_aliases:
+    #         raise ValueError(f"market_name {v} must be in {MyForecastMethods}")
+    #     return v

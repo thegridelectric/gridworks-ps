@@ -1,12 +1,15 @@
-from pydantic import field_validator
+from pydantic import field_validator, model_validator
+from typing_extensions import Self
 
 from gwprice.my_markets import MyMarkets
-from gwprice.property_format import MarketSlotName, UTCSeconds
+from gwprice.property_format import MarketName, MarketSlotName, UTCSeconds
 from gwprice.types import GwBase
 
 
 class LatestPrediction(GwBase):
     market_slot_name: MarketSlotName
+    market_name: MarketName
+    slot_start_s: UTCSeconds
     value: float
     last_updated_s: UTCSeconds
 
@@ -19,3 +22,11 @@ class LatestPrediction(GwBase):
         if market_name not in my_market_names:
             raise ValueError(f"market_name {market_name} must be in {MyMarkets}")
         return v
+
+    @model_validator(mode="after")
+    def name_consistency(self) -> Self:
+        if self.market_slot_name != f"{self.market_name}.{self.slot_start_s}":
+            raise ValueError(
+                f"{self.market_slot_name} should be {self.market_name}.{self.slot_start_s} "
+            )
+        return self

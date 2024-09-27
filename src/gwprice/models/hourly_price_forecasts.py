@@ -1,11 +1,8 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import relationship
 
-# Define the base class
-# NOTE: for any other model do this:
-# from gwprice.models.p_nodes import Base
-Base = declarative_base()
+from gwprice.models.p_nodes import Base
 
 
 class HourlyPriceForecastSql(Base):
@@ -22,7 +19,7 @@ class HourlyPriceForecastSql(Base):
     def to_dict(self):
         return {
             "PriceUid": self.price_uid,
-            "FromGNodeALias": self.from_g_node_alias,
+            "FromGNodeAlias": self.from_g_node_alias,
             "ChannelName": self.channel_name,
             "StartUnixS": self.start_unix_s,
             "HourStartingPrices": self.hour_starting_prices,

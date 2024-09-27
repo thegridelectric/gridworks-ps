@@ -1,7 +1,7 @@
 from typing import List
 
 from gwprice.enums import MarketCategory
-from gwprice.type_helpers import ForecastMethod
+from gwprice.type_helpers.forecast_method import ForecastMethod
 
 MyForecastMethods: List[ForecastMethod] = [
     ForecastMethod(
