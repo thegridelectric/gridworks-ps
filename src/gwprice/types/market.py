@@ -6,8 +6,6 @@ from pydantic import model_validator
 from typing_extensions import Self
 
 from gwprice.enums import MarketCategory, MarketPriceUnit, MarketTypeName
-
-# from gwprice.my_p_nodes import MyPNodes
 from gwprice.property_format import (
     LeftRightDot,
     MarketName,
@@ -24,14 +22,6 @@ class Market(GwBase):
     type_name: Literal["market"] = "market"
     version: Literal["000"] = "000"
 
-    # @field_validator("p_node_alias")
-    # @classmethod
-    # def check_p_node_alias(cls, v: int) -> str:
-    #     my_p_node_aliases = [p.alias for p in MyPNodes]
-    #     if v not in my_p_node_aliases:
-    #         raise ValueError(f"p_node {v} must be in {MyPNodes}")
-    #     return v
-
     @model_validator(mode="after")
     def check_axiom_1(self) -> Self:
         """
@@ -43,5 +33,17 @@ class Market(GwBase):
         remainder = ".".join(name_parts[1:])
         if suffix != remainder:
             raise ValueError(f"name {self.name} does not match {remainder}!")
-        # Implement check for axiom "
+        category_shorthand = name_parts[0]
+        if (
+            (self.category == MarketCategory.Energy and category_shorthand != "e")
+            or (
+                self.category == MarketCategory.Distribution
+                and category_shorthand != "d"
+            )
+            or (
+                self.category == MarketCategory.Regulation and category_shorthand != "r"
+            )
+        ):
+            raise ValueError(f"name {self.name} does not match {self.category}")
+
         return self
