@@ -1,6 +1,6 @@
 MpAlias,csv.ep.da.1_0_0
 PNodeAlias,w.isone.4001
-MethodAlias,isoneexpress.finalrt.hr.web
+MethodAlias,isoneexpress.da.web
 Comment,Hourly Day Ahead prices scraped
 StartYearUtc,2019
 StartMonthUtc,1
