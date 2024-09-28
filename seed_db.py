@@ -34,13 +34,13 @@ bulk_insert_markets(session, [pyd_to_sql(market) for market in MyMarkets])
 bulk_insert_channels(session, [pyd_to_sql(channel) for channel in MyForecastChannels])
 
 
-from gwprice.types import Market
 from gwprice.enums import MarketCategory, MarketPriceUnit, MarketTypeName
+from gwprice.types import Market
 
 m = Market(
-        name="e.rt60gate5.hw1.isone.ver.keene",
-        market_type_name=MarketTypeName.rt60gate5,
-        p_node_alias="hw1.isone.ver.keene",
-        category=MarketCategory.Energy,
-        unit=MarketPriceUnit.USDPerMWh,
-    )
+    name="e.rt60gate5.hw1.isone.ver.keene",
+    market_type_name=MarketTypeName.rt60gate5,
+    p_node_alias="hw1.isone.ver.keene",
+    category=MarketCategory.Energy,
+    unit=MarketPriceUnit.USDPerMWh,
+)

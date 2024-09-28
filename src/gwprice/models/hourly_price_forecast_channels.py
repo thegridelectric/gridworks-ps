@@ -22,9 +22,7 @@ class HourlyPriceForecastChannelSql(Base):
         ),
     )
 
-    market = relationship(
-        "MarketSql", back_populates="hourly_channels"
-    )
+    market = relationship("MarketSql", back_populates="hourly_channels")
     method = relationship("ForecastMethodSql", back_populates="hourly_channels")
     forecasts = relationship("HourlyPriceForecastSql", back_populates="channel")
 
@@ -85,7 +83,9 @@ def bulk_insert_channels(
                 not in existing_uniques
             ]
 
-            print(f"Inserting {len(new_channels)} forecast channels out of {len(batch)}")
+            print(
+                f"Inserting {len(new_channels)} forecast channels out of {len(batch)}"
+            )
 
             if new_channels:
                 session.bulk_save_objects(new_channels)

@@ -1,7 +1,6 @@
 from typing import List
 
 from sqlalchemy import Column, String
-from sqlalchemy.exc import NoSuchTableError, OperationalError, SQLAlchemyError
 from sqlalchemy.orm import Session, relationship
 
 from gwprice.models.p_nodes import Base
@@ -53,7 +52,9 @@ def bulk_insert_forecast_methods(
             new_forecasts = [
                 forecast for forecast in batch if forecast.alias not in existing_pks
             ]
-            print(f"Inserting {len(new_forecasts)} forecast methods out of {len(batch)}")
+            print(
+                f"Inserting {len(new_forecasts)} forecast methods out of {len(batch)}"
+            )
 
             session.bulk_save_objects(new_forecasts)
             session.commit()
