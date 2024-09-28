@@ -19,20 +19,6 @@ MyMarkets: List[Market] = [
         unit=MarketPriceUnit.USDPerMWh,
     ),
     Market(
-        name="e.rt60gate5.hw1.isone.stetson",
-        market_type_name=MarketTypeName.rt60gate5,
-        p_node_alias="hw1.isone.stetson",
-        category=MarketCategory.Energy,
-        unit=MarketPriceUnit.USDPerMWh,
-    ),
-    Market(
-        name="d.rt60gate5.hw1.isone.stetson",
-        market_type_name=MarketTypeName.rt60gate5,
-        p_node_alias="hw1.isone.stetson",
-        category=MarketCategory.Distribution,
-        unit=MarketPriceUnit.USDPerMWh,
-    ),
-    Market(
         name="e.da60.hw1.isone.4001",
         market_type_name=MarketTypeName.da60,
         p_node_alias="hw1.isone.4001",
@@ -53,6 +39,4 @@ MyMarkets: List[Market] = [
         category=MarketCategory.Regulation,
         unit=MarketPriceUnit.USDPerMWh,
     ),
-
-
 ]

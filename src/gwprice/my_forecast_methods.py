@@ -26,13 +26,13 @@ MyForecastMethods: List[ForecastMethod] = [
         alias="gw.pathways.alpha",
         category=MarketCategory.Energy,
         description="Stetson prices massaged to look like pathways carbon, "
-                    " done by George.",
+        " done by George.",
     ),
     ForecastMethod(
         alias="gw.pathways.beta",
         category=MarketCategory.Energy,
         description="A second set of prices massaged to look like pathways carbon, "
-                    " done by George.",
+        " done by George.",
     ),
     ForecastMethod(
         alias="gw.me.versant.a1.res.ets",
