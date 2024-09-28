@@ -73,7 +73,7 @@ def bulk_insert_p_nodes(session: Session, p_nodes: List[PNodeSql]):
                 if p_node.id not in existing_pks
                 and p_node.alias not in existing_aliases
             ]
-            print(f"Inserting {len(new_p_nodes)} out of {len(batch)}")
+            print(f"Inserting {len(new_p_nodes)} p_nodes out of {len(batch)}")
 
             if new_p_nodes:
                 session.bulk_save_objects(new_p_nodes)

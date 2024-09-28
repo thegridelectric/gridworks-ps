@@ -35,8 +35,13 @@ class Market(GwBase):
     @model_validator(mode="after")
     def check_axiom_1(self) -> Self:
         """
-        Axiom : Name Derived from MarketTypeName, PNodeAlias and Category..
-        Name = f"{MarketTypeName}.{PNode}.x" where x = e if category is energy, d if distribution, r if regulation.
+        Axiom : Name Derived from MarketTypeName, PNodeAlias and Category.
+        Name = f"x.{MarketTypeName}.{PNode}" where x = e if category is energy, d if distribution, r if regulation.
         """
+        suffix = f"{self.market_type_name}.{self.p_node_alias}"
+        name_parts = self.name.split('.')
+        remainder = '.'.join(name_parts[1:])
+        if suffix != remainder:
+            raise ValueError(f"name {self.name} does not match {remainder}!")
         # Implement check for axiom "
         return self

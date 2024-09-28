@@ -64,7 +64,7 @@ def bulk_insert_markets(session: Session, markets: List[MarketSql]):
             existing_pks = {
                 result[0]
                 for result in session.query(MarketSql.name)
-                .filter(MarketSql.id.in_(pk_set))
+                .filter(MarketSql.name.in_(pk_set))
                 .all()
             }
 
@@ -84,7 +84,7 @@ def bulk_insert_markets(session: Session, markets: List[MarketSql]):
                 not in existing_uniques
             ]
 
-            print(f"Inserting {len(new_markets)} out of {len(batch)}")
+            print(f"Inserting {len(new_markets)} markets out of {len(batch)}")
 
             if new_markets:
                 session.bulk_save_objects(new_markets)
