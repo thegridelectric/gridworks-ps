@@ -16,10 +16,10 @@ class Price(GwBase):
     @classmethod
     def check_market_slot_name(cls, v: int) -> str:
         x = v.split(".")
-        market_name = f"{x[0]}.{x[1]}"
+        market_name = ".".join(v.split(".")[:-1])
         my_market_names = [market.name for market in MyMarkets]
         if market_name not in my_market_names:
-            raise ValueError(f"market_name {market_name} must be in {MyMarkets}")
+            raise ValueError(f"market_name {market_name} must be in {my_market_names}")
         return v
 
     @model_validator(mode="after")

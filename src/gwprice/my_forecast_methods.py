@@ -25,10 +25,14 @@ MyForecastMethods: List[ForecastMethod] = [
     ForecastMethod(
         alias="gw.pathways.alpha",
         category=MarketCategory.Energy,
-        description="Prediction of next period's LMP (electricity price) based "
-        "on next period's day ahead and this period's real-time price "
-        "done on a rolling 4 weeks continuously updating prediction "
-        "parameters",
+        description="Stetson prices massaged to look like pathways carbon, "
+                    " done by George.",
+    ),
+    ForecastMethod(
+        alias="gw.pathways.beta",
+        category=MarketCategory.Energy,
+        description="A second set of prices massaged to look like pathways carbon, "
+                    " done by George.",
     ),
     ForecastMethod(
         alias="gw.me.versant.a1.res.ets",
