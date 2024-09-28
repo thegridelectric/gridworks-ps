@@ -298,10 +298,8 @@ def is_market_slot_name(v: str) -> None:
         slot_start = int(slot_start)
     except ValueError:
         raise ValueError(f"slot start {slot_start} not an int")
-    if slot_start % 300 != 0:
-        raise ValueError(f"slot start {slot_start} not a multiple of 300")
     is_market_name(".".join(x[:-1]))
-    market_type_name = x[0]
+    market_type_name = x[1]
     market_duration_minutes = MarketMinutes[market_type_name]
     if not slot_start % (market_duration_minutes * 60) == 0:
         raise ValueError(
