@@ -15,7 +15,7 @@ class PNodeSql(Base):
     alias = Column(String, nullable=False, unique=True)
     prev_alias = Column(String)
     display_name = Column(String)
-
+    iso_location_info=Column(String)
     markets = relationship("MarketSql", back_populates="p_node")
 
     def __repr__(self):
@@ -34,6 +34,9 @@ class PNodeSql(Base):
 
         if self.display_name:
             d["DisplayName"] = self.display_name
+
+        if self.iso_location_info:
+            d["IsoLocationInfo"] = self.iso_location_info
         return d
 
 

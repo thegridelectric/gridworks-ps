@@ -1,6 +1,6 @@
 ﻿TypeName, hourly.price.csv
 Version, 000
-MarketName,d.rt60gate5.hw1.isone.stetson
+MarketName,d.rt60gate5.hw1.isone.ver.keene
 MethodAlias,gw.me.versant.a1.res.ets
 Comment, Versant Power Residential Electric Thermal Storage Service Rate Time-of-Use. See https://github.com/thegridelectric/gridworks-ps/tree/dev/docs/enums/distribution_tariff/VersantA1StorageHeatTariff
 StartYearUtc,2022
