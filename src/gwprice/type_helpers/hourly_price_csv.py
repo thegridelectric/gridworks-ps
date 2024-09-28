@@ -7,6 +7,7 @@ import pendulum
 from pydantic import model_validator
 from typing_extensions import Self
 
+from gwprice.enums import MarketTypeName
 from gwprice.property_format import LeftRightDot, MarketName, UUID4Str
 from gwprice.types.gw_base import GwBase
 
@@ -60,6 +61,10 @@ class HourlyPriceCsv(GwBase):
             self.start_hour_utc,
             self.start_minute_utc,
         ).int_timestamp
+
+    def market_type(self) -> MarketTypeName:
+        x = self.market_name.split(".")
+        return x[1]
 
     @classmethod
     def from_csv(cls, file_path: str) -> "HourlyPriceCsv":

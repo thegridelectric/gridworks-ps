@@ -34,7 +34,7 @@ def bulk_insert_prices(session: Session, prices: List[PriceSql]):
     if not all(isinstance(obj, PriceSql) for obj in prices):
         raise ValueError("All objects in prices must be PriceSql objects")
 
-    batch_size = 10
+    batch_size = 400
 
     for i in range(0, len(prices), batch_size):
         try:
@@ -54,7 +54,7 @@ def bulk_insert_prices(session: Session, prices: List[PriceSql]):
             new_prices = [
                 price for price in batch if price.market_slot_name not in existing_pks
             ]
-            print(f"Inserting {len(new_prices)} price methods out of {len(batch)}")
+            print(f"Inserting {len(new_prices)} prices out of {len(batch)}")
 
             session.bulk_save_objects(new_prices)
             session.commit()
