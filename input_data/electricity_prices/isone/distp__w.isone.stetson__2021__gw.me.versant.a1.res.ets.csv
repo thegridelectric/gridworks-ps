@@ -1,5 +1,6 @@
-﻿MpAlias,csv.distp.sync.1_0_0
-PNodeAlias,w.isone.stetson
+﻿TypeName, hourly.price.csv
+Version, 000
+MarketName,d.rt60gate5.hw1.isone.stetson
 MethodAlias,gw.me.versant.a1.res.ets
 Comment, Versant Power Residential Electric Thermal Storage Service Rate Time-of-Use. See https://github.com/thegridelectric/gridworks-ps/tree/dev/docs/enums/distribution_tariff/VersantA1StorageHeatTariff
 StartYearUtc,2021
@@ -7,9 +8,6 @@ StartMonthUtc,1
 StartDayUtc,1
 StartHourUtc,5
 StartMinuteUtc,0
-UniformSliceDurationHrs,1
-TimezoneString,US/Eastern
-CurrencyUnit,USD
 PriceUid,b7d96b56-9e9d-4f3a-92bb-bd90c0907f6e
 Header,Distribution Electricity Price (Currency Unit/MWh)
 46.73

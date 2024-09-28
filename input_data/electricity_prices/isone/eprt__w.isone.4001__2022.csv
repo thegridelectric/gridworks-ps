@@ -1,5 +1,6 @@
-MpAlias,csv.eprt.sync.1_0_0
-PNodeAlias,w.isone.4001
+TypeName, hourly.price.csv
+Version, 000
+MarketName, e.rt60gate5.hw1.isone.4001
 MethodAlias,isoneexpress.finalrt.hr.web
 Comment,Final hourly realtime energy prices scraped from isone isoexpress
 StartYearUtc,2022
@@ -7,9 +8,6 @@ StartMonthUtc,1
 StartDayUtc,1
 StartHourUtc,5
 StartMinuteUtc,0
-UniformSliceDurationHrs,1
-TimezoneString,US/Eastern
-CurrencyUnit,USD
 PriceUid,d1a301bf-0a62-41b3-ade2-57dc4fe16235
 Header,Real Time LMP Electricity Price (Currency Unit/MWh)
 26.59,

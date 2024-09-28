@@ -1,5 +1,6 @@
-MpAlias,csv.ep.da.1_0_0
-PNodeAlias,w.isone.4001
+TypeName, hourly.price.csv
+Version, 000
+MarketName,e.da60.hw1.isone.4001
 MethodAlias,isoneexpress.da.web
 Comment,Hourly Day Ahead prices from isoexpress
 StartYearUtc,2020
@@ -7,8 +8,6 @@ StartMonthUtc,1
 StartDayUtc,1
 StartHourUtc,5
 StartMinuteUtc,0
-TimeZone,US/Eastern
-CurrencyUnit,USD
 PriceUid,460e588a-c57b-4e18-a926-fa3f7e8f2646
 Header,Day Ahead LMP Electricity Price (Currency Unit/MWh) and duration (hrs)
 22.98,1

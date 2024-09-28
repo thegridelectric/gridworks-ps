@@ -1,15 +1,13 @@
-﻿MpAlias,csv.eprt.sync.1_0_0
-PNodeAlias,w.isone.stetson
-MethodAlias,isoneexpress.finalrt.hr.web
-Comment,Hourly Realtime prices scraped from Stetson
+﻿TypeName, hourly.price.csv
+Version, 000
+MarketName,e.rt60gate5.d.isone.stetson
+MethodAlias,gw.pathways.alpha
+Comment,Stetson prices massaged to look like pathways carbon
 StartYearUtc,2022
 StartMonthUtc,1
 StartDayUtc,1
 StartHourUtc,5
 StartMinuteUtc,0
-UniformSliceDurationHrs,1
-TimezoneString,US/Eastern
-CurrencyUnit,USD
 PriceUid,298f3170-90c6-42dd-8cb1-a7c820ad7409
 Header,Real Time LMP Electricity Price (Currency Unit/MWh)
 126.36,

@@ -1,7 +1,7 @@
 MpAlias,csv.eprt.sync.1_0_0
-PNodeAlias,w.isone.stetson
+PNodeAlias,hw1.isone.stetson
 MethodAlias,isoneexpress.finalrt.hr.web
-Comment,Used 168 slices from input_data/electricity_prices/isone/eprt__w.isone.stetson__2022.csv
+Comment,Used 168 slices from input_data/electricity_prices/isone/eprt__hw1.isone.stetson__2022.csv
 StartYearUtc,2022
 StartMonthUtc,1
 StartDayUtc,1

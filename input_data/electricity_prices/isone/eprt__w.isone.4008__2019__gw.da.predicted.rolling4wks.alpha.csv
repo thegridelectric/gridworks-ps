@@ -1,5 +1,6 @@
-MpAlias,csv.eprt.sync.1_0_0
-PNodeAlias,w.isone.4008
+TypeName, hourly.price.csv
+Version, 000
+MarketName, e.rt60gate5.d.isone.4008,
 MethodAlias, gw.da.predicted.rolling4wks.alpha
 Comment, Prediction of next period's LMP (electricity price) based on next period's day ahead and this period's real-time price done on a rolling 4 weeks continuously updating prediction parameters
 StartYearUtc,2019
@@ -7,9 +8,6 @@ StartMonthUtc,1
 StartDayUtc,1
 StartHourUtc,5
 StartMinuteUtc,0
-UniformSliceDurationHrs,1
-TimezoneString,US/Eastern
-CurrencyUnit,USD
 PriceUid,e080f0c7-cebc-4cb1-b032-e77004fec11b
 Header,Real Time LMP Electricity Price (Currency Unit/MWh)
 32.96292577

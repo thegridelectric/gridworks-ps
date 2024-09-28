@@ -1,5 +1,6 @@
-MpAlias,csv.eprt.sync.1_0_0
-PNodeAlias,w.isone.4001
+TypeName, hourly.price.csv
+Version, 000
+MarketName, e.rt60gate5.d.isone.4001
 MethodAlias,isoneexpress.da.web
 Comment,Hourly Day Ahead prices used as RT
 StartYearUtc,2020
@@ -7,9 +8,6 @@ StartMonthUtc,1
 StartDayUtc,1
 StartHourUtc,5
 StartMinuteUtc,0
-UniformSliceDurationHrs,1
-TimezoneString,US/Eastern
-CurrencyUnit,USD
 PriceUid,3907f438-aa82-4d51-a243-8739e0d382f1
 Header,Real Time LMP Electricity Price (Currency Unit/MWh)
 22.98
