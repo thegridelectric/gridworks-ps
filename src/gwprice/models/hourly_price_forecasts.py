@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
@@ -13,6 +13,16 @@ class HourlyPriceForecastSql(Base):
     start_unix_s = Column(Integer, nullable=False)
     hour_starting_prices = Column(JSONB, nullable=False)
     forecast_created_s = Column(Integer, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint(
+            "channel_name",
+            "start_unix_s",
+            "forecast_created_s",
+            name="forecast_uq_channel_start_created",
+        ),
+    )
+
 
     channel = relationship("HourlyPriceForecastChannelSql", back_populates="forecasts")
 

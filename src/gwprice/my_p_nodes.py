@@ -1,6 +1,6 @@
 from typing import List
 
-from gwprice.type_helpers.p_node import PNode
+from gwprice.types.p_node import PNode
 
 MyPNodes: List[PNode] = [
     PNode(alias="hw1.isone.ver.keene", id="7286b617-bd15-4b26-8993-96285827432b"),

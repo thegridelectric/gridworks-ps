@@ -29,7 +29,7 @@ class HourlyPriceForecastChannelSql(Base):
     def to_dict(self):
         return {
             "Name": self.name,
-            "PNodeAlias": self.market_name,
+            "MarketName": self.market_name,
             "TotalHours": self.total_hours,
             "MethodAlias": self.method_alias,
         }
