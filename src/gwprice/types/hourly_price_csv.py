@@ -96,7 +96,11 @@ class HourlyPriceCsv(GwBase):
             if key.startswith("\ufeff"):  # Check if it starts with BOM
                 key = key[1:]
             d[key] = value
-
+        d["StartYearUtc"] = int(d["StartYearUtc"])
+        d["StartMonthUtc"] = int(d["StartMonthUtc"])
+        d["StartDayUtc"] = int(d["StartDayUtc"])
+        d["StartHourUtc"] = int(d["StartHourUtc"])
+        d["StartMinuteUtc"] = int(d["StartMinuteUtc"])
         # Process the remaining rows (prices) and add to PriceList
         for row in rows[12:]:
             try:

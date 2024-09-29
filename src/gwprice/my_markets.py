@@ -6,6 +6,15 @@ MyMarketDicts = [
     {
         "TypeName": "market",
         "Version": "000",
+        "Name": "e.rt60gate5.hw1.isone.ver.keene.stetson",
+        "MarketTypeName": "rt60gate5",
+        "PNodeAlias": "hw1.isone.ver.keene.stetson",
+        "Category": "Energy",
+        "Unit": "USDPerMWh",
+    },
+    {
+        "TypeName": "market",
+        "Version": "000",
         "Name": "e.rt60gate5.hw1.isone.ver.keene",
         "MarketTypeName": "rt60gate5",
         "PNodeAlias": "hw1.isone.ver.keene",
