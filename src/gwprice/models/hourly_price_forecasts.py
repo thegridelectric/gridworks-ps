@@ -23,7 +23,6 @@ class HourlyPriceForecastSql(Base):
         ),
     )
 
-
     channel = relationship("HourlyPriceForecastChannelSql", back_populates="forecasts")
 
     def to_dict(self):
