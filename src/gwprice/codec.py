@@ -15,12 +15,7 @@ from gwprice.models import (
 from gwprice.type_helpers import ForecastMethod, LatestPrediction, Price
 
 # from gwprice.type_helpers import FinalPrice
-from gwprice.types import (
-    HourlyPriceForecast,
-    HourlyPriceForecastChannel,
-    Market,
-    PNode
-)
+from gwprice.types import HourlyPriceForecast, HourlyPriceForecastChannel, Market, PNode
 from gwprice.types.asl_types import TypeByName
 from gwprice.types.gw_base import GwBase
 

@@ -32,7 +32,7 @@ class Market(GwBase):
         name_parts = self.name.split(".")
         remainder = ".".join(name_parts[1:])
         if suffix != remainder:
-            raise ValueError(f"name {self.name} does not match {remainder}!")
+            raise ValueError(f"name {self.name} does not match {suffix}!")
         category_shorthand = name_parts[0]
         if (
             (self.category == MarketCategory.Energy and category_shorthand != "e")

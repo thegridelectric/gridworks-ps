@@ -15,6 +15,7 @@ class PNodeSql(Base):
     alias = Column(String, nullable=False, unique=True)
     prev_alias = Column(String)
     display_name = Column(String)
+    iso_id = Column(String)
     iso_location_info = Column(String)
     markets = relationship("MarketSql", back_populates="p_node")
 

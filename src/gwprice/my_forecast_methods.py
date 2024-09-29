@@ -1,9 +1,17 @@
 from typing import List
 
 from gwprice.enums import MarketCategory
-from gwprice.type_helpers.forecast_method import ForecastMethod
+from gwprice.types import ForecastMethod
 
 MyForecastMethods: List[ForecastMethod] = [
+    ForecastMethod(
+        alias="basic.da",
+        category=MarketCategory.Energy,
+        description="Use DA prices for today, and once tomorrow's prices are available "
+        "(typically between noon and 1 America/NY) use those prices for "
+        " tomorrow.  In either case, repeat the last day for the remaining "
+        " hours",
+    ),
     ForecastMethod(
         alias="isoneexpress.finalrt.hr.web",
         category=MarketCategory.Energy,

@@ -1,7 +1,8 @@
 import dotenv
-from gwprice.config import Settings
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+from gwprice.config import Settings
 
 # Load settings from environment or .env file
 settings = Settings(_env_file=dotenv.find_dotenv())
@@ -22,6 +23,7 @@ SessionLocal = sessionmaker(
     autocommit=False,  # Prevent auto-commit of transactions
     autoflush=False,  # Prevent auto-flush of transactions
 )
+
 
 def get_db():
     db = SessionLocal()
