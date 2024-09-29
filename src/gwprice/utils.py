@@ -30,7 +30,6 @@ def check_locals(db: Session):
         print("Update MyPNodes:")
         json.dumps([p.to_dict() for p in db_p_nodes])
 
-
     db_markets = [sql_to_pyd(m) for m in db.query(MarketSql).all()]
     same = True
     for m in MyMarkets:
@@ -61,7 +60,7 @@ def check_locals(db: Session):
     same = True
     for c in MyForecastChannels:
         c_db = next((c_db for c_db in db_channels if c_db.name == c.name), None)
-        if c!= c_db:
+        if c != c_db:
             same = False
             print(c)
             print(c_db)

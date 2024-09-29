@@ -27,6 +27,14 @@ MyChannelDicts = [
         "TotalHours": 48,
         "MethodAlias": "isoneexpress.finalrt.hr.web",
     },
+    {
+        "TypeName": "hourly.price.forecast.channel",
+        "Version": "000",
+        "Name": "maine.perfect.48",
+        "MarketName": "e.rt60gate5.hw1.isone.4001",
+        "TotalHours": 48,
+        "MethodAlias": "isoneexpress.finalrt.hr.web",
+    },
 ]
 MyForecastChannels: List[HourlyPriceForecastChannel] = [
     HourlyPriceForecastChannel.from_dict(d) for d in MyChannelDicts

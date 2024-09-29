@@ -35,7 +35,7 @@ def get_channels(db: Session = Depends(get_db)) -> List[HourlyPriceForecastChann
     "/forecast/{channel_name}/{start_unix_s}",
     response_model=Optional[HourlyPriceForecast],
 )
-def get_latest_forecast(
+def get_forecast(
     channel_name: str, start_unix_s: int, db: Session = Depends(get_db)
 ) -> Optional[HourlyPriceForecast]:
     # Query for the latest forecast matching the given channel_name and start_unix_s
@@ -49,6 +49,24 @@ def get_latest_forecast(
         .first()
     )
 
+    if forecast is None:
+        raise HTTPException(status_code=404, detail="Forecast not found")
+
+    # Return the forecast as a Pydantic model
+    return forecast
+
+@app.get(
+    "/forecast_by_id/{price_uid}",
+    response_model=Optional[HourlyPriceForecast],
+)
+def get_forecast_by_id(
+    price_uid: str,  db: Session = Depends(get_db)
+) -> Optional[HourlyPriceForecast]:
+    forecast = (
+        db.query(HourlyPriceForecastSql)
+        .filter(HourlyPriceForecastSql.price_uid == price_uid)
+        .first()
+    )
     if forecast is None:
         raise HTTPException(status_code=404, detail="Forecast not found")
 

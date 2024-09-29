@@ -11,7 +11,7 @@ class PriceSql(Base):
     market_slot_name = Column(String, primary_key=True)
     market_name = Column(String, ForeignKey("markets.name"), nullable=False)
     slot_start_s = Column(Integer, nullable=False)
-    price = Column(Float, nullable=False)
+    value = Column(Float, nullable=False)
 
     __table_args__ = (
         UniqueConstraint(
@@ -26,7 +26,7 @@ class PriceSql(Base):
             "MarketSlotName": self.market_slot_name,
             "MarketName": self.market_name,
             "SlotStartS": self.slot_start_s,
-            "Price": self.price,
+            "Value": self.value,
         }
 
 

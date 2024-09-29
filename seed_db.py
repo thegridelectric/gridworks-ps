@@ -28,7 +28,7 @@ def seed_database(db: Session, update_prices: bool = False):
     bulk_insert_channels(db, [pyd_to_sql(channel) for channel in MyForecastChannels])
 
     if update_prices:
-        folder_path = "../../../input_data/electricity_prices/isone"
+        folder_path = "input_data/electricity_prices/isone"
         for file_name in os.listdir(folder_path):
             if file_name.endswith("csv"):
                 file_path = os.path.join(folder_path, file_name)
@@ -50,7 +50,7 @@ def seed_database(db: Session, update_prices: bool = False):
                                 market_slot_name=f"{h.market_name}.{slot_start}",
                                 market_name=h.market_name,
                                 slot_start_s=slot_start,
-                                price=h.price_list[i],
+                                value=h.price_list[i],
                             )
                         )
 

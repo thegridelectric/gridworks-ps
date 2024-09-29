@@ -10,7 +10,7 @@ class Price(GwBase):
     market_slot_name: MarketSlotName
     market_name: MarketName
     slot_start_s: UTCSeconds
-    price: float
+    value: float
 
     @field_validator("market_slot_name")
     @classmethod

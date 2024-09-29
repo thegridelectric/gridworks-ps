@@ -12,14 +12,15 @@ class HourlyPriceForecastSql(Base):
     channel_name = Column(String, ForeignKey("hpf_channels.name"), nullable=False)
     start_unix_s = Column(Integer, nullable=False)
     hour_starting_prices = Column(JSONB, nullable=False)
-    forecast_created_s = Column(Integer, nullable=False)
+    forecast_created_s = Column(Integer)
 
     __table_args__ = (
         UniqueConstraint(
+            "from_g_node_alias",
             "channel_name",
             "start_unix_s",
             "forecast_created_s",
-            name="forecast_uq_channel_start_created",
+            name="forecast_uq_gn_channel_start_created",
         ),
     )
 
