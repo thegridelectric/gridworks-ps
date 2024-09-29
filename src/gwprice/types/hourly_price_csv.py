@@ -1,4 +1,5 @@
 """Type hourly.price.csv, version 000"""
+
 import csv
 from datetime import datetime, timezone
 from typing import List, Literal
@@ -74,8 +75,10 @@ class HourlyPriceCsv(GwBase):
 
         slot_duration_minutes = MarketMinutes[self.market_type()]
         if self.start_unix_s() % (slot_duration_minutes * 60) != 0:
-            raise ValueError(f"Start {datetime.fromtimestamp(self.start_unix_s(), tz=timezone.utc)} "
-                             f" not consistent with a market duration {slot_duration_minutes} minutes!")
+            raise ValueError(
+                f"Start {datetime.fromtimestamp(self.start_unix_s(), tz=timezone.utc)} "
+                f" not consistent with a market duration {slot_duration_minutes} minutes!"
+            )
         return self
 
     @classmethod

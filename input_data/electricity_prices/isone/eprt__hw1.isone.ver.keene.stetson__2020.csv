@@ -1,6 +1,6 @@
 ﻿TypeName, hourly.price.csv
 Version, 000
-MarketName,e.rt60gate5.hw1.isone.ver.keene
+MarketName,e.rt60gate5.hw1.isone.ver.keene.stetson
 MethodAlias,isoneexpress.finalrt.hr.web
 Comment,Hourly Realtime prices scraped from Stetson
 StartYearUtc,2020

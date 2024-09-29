@@ -1,7 +1,5 @@
 import os
 
-from sqlalchemy.orm import Session
-
 from gwprice.codec import pyd_to_sql
 from gwprice.database import get_db
 from gwprice.models.forecast_methods import bulk_insert_forecast_methods
@@ -18,6 +16,7 @@ from gwprice.my_p_nodes import MyPNodes
 from gwprice.property_format import MarketMinutes
 from gwprice.type_helpers.price import Price
 from gwprice.types import HourlyPriceCsv
+from sqlalchemy.orm import Session
 
 
 def seed_database(db: Session, update_prices: bool = False):

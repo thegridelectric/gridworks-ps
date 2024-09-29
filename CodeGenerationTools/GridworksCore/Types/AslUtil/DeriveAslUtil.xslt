@@ -81,7 +81,7 @@ def type_makers() -> List[GwBase]:
 
 
 for maker in type_makers():
-    TypeByName[maker.type_name] = maker
+    TypeByName[maker.type_name_value()] = maker
 
 
 def version_by_type_name() -> Dict[str, str]:

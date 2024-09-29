@@ -1,6 +1,5 @@
 """Tests market type, version 000"""
 
-from gwprice.enums import MarketCategory, MarketPriceUnit, MarketTypeName
 from gwprice.types import Market
 
 

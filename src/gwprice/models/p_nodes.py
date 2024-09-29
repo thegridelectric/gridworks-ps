@@ -36,6 +36,9 @@ class PNodeSql(Base):
         if self.display_name:
             d["DisplayName"] = self.display_name
 
+        if self.iso_id:
+            d["IsoId"] = self.iso_id
+
         if self.iso_location_info:
             d["IsoLocationInfo"] = self.iso_location_info
         return d

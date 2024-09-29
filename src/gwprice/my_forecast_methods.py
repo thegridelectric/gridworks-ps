@@ -1,57 +1,66 @@
 from typing import List
 
-from gwprice.enums import MarketCategory
 from gwprice.types import ForecastMethod
 
+MyForecastMethodDicts = [
+    {
+        "TypeName": "forecast.method",
+        "Version": "000",
+        "Alias": "isoneexpress.finalrt.hr.web",
+        "Category": "Energy",
+        "Description": "Final hourly realtime energy prices from isone isoexpress",
+    },
+    {
+        "TypeName": "forecast.method",
+        "Version": "000",
+        "Alias": "isoneexpress.da.web",
+        "Category": "Energy",
+        "Description": "Hourly Day Ahead prices from isoexpress",
+    },
+    {
+        "TypeName": "forecast.method",
+        "Version": "000",
+        "Alias": "gw.da.predicted.rolling4wks.alpha",
+        "Category": "Energy",
+        "Description": "Prediction of next period's LMP (electricity price) based on next period's day ahead and this period's real-time price done on a rolling 4 weeks continuously updating prediction parameters",
+    },
+    {
+        "TypeName": "forecast.method",
+        "Version": "000",
+        "Alias": "gw.me.versant.a1.res.ets",
+        "Category": "Distribution",
+        "Description": "Versant Power Residential Electric Thermal Storage Service Rate Time-of-Use.See https://github.com/thegridelectric/gridworks-ps/tree/dev/docs/enums/distribution_tariff/VersantA1StorageHeatTariff",
+    },
+    {
+        "TypeName": "forecast.method",
+        "Version": "000",
+        "Alias": "isoneexpress.reg.5minfinalrcp.hrlyavg.web",
+        "Category": "Regulation",
+        "Description": "Hourly Realtime regulation prices from isoexpress",
+    },
+    {
+        "TypeName": "forecast.method",
+        "Version": "000",
+        "Alias": "gw.pathways.alpha",
+        "Category": "Energy",
+        "Description": "Stetson prices massaged to look like pathways carbon, done by George.",
+    },
+    {
+        "TypeName": "forecast.method",
+        "Version": "000",
+        "Alias": "gw.pathways.beta",
+        "Category": "Energy",
+        "Description": "Prediction of next period's LMP (electricity price) based on next period's day ahead and this period's real-time price done on a rolling 4 weeks continuously updating prediction parameters",
+    },
+    {
+        "TypeName": "forecast.method",
+        "Version": "000",
+        "Alias": "basic.da",
+        "Category": "Energy",
+        "Description": "Use DA prices for today, and once tomorrows prices are available (typically between noon and 1 America/NY) use those prices for  tomorrow.  In either case, repeat the last day for the remaining  hours",
+    },
+]
+
 MyForecastMethods: List[ForecastMethod] = [
-    ForecastMethod(
-        alias="basic.da",
-        category=MarketCategory.Energy,
-        description="Use DA prices for today, and once tomorrow's prices are available "
-        "(typically between noon and 1 America/NY) use those prices for "
-        " tomorrow.  In either case, repeat the last day for the remaining "
-        " hours",
-    ),
-    ForecastMethod(
-        alias="isoneexpress.finalrt.hr.web",
-        category=MarketCategory.Energy,
-        description="Final hourly realtime energy prices from " "isone isoexpress",
-    ),
-    ForecastMethod(
-        alias="isoneexpress.da.web",
-        category=MarketCategory.Energy,
-        description="Hourly Day Ahead prices from isoexpress",
-    ),
-    ForecastMethod(
-        alias="gw.da.predicted.rolling4wks.alpha",
-        category=MarketCategory.Energy,
-        description="Prediction of next period's LMP (electricity price) "
-        "based on next period's day ahead and this period's "
-        "real-time price done on a rolling 4 weeks continuously "
-        "updating prediction parameters",
-    ),
-    ForecastMethod(
-        alias="gw.pathways.alpha",
-        category=MarketCategory.Energy,
-        description="Stetson prices massaged to look like pathways carbon, "
-        " done by George.",
-    ),
-    ForecastMethod(
-        alias="gw.pathways.beta",
-        category=MarketCategory.Energy,
-        description="A second set of prices massaged to look like pathways carbon, "
-        " done by George.",
-    ),
-    ForecastMethod(
-        alias="gw.me.versant.a1.res.ets",
-        category=MarketCategory.Distribution,
-        description="Versant Power Residential Electric Thermal Storage "
-        "Service Rate Time-of-Use."
-        "See https://github.com/thegridelectric/gridworks-ps/tree/dev/docs/enums/distribution_tariff/VersantA1StorageHeatTariff",
-    ),
-    ForecastMethod(
-        alias="isoneexpress.reg.5minfinalrcp.hrlyavg.web",
-        category=MarketCategory.Regulation,
-        description="Hourly Realtime regulation prices from isoexpress",
-    ),
+    ForecastMethod.from_dict(d) for d in MyForecastMethodDicts
 ]

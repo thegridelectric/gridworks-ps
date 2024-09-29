@@ -1,4 +1,5 @@
 """Tests hourly.price.csv type, version 000"""
+
 import pytest
 from gw.errors import GwTypeError
 from gwprice.types import HourlyPriceCsv
