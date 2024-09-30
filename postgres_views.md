@@ -12,7 +12,7 @@ FROM messages;
 CREATE VIEW pprices AS
 SELECT
     market_slot_name,
-    price,
+    value as price,
     to_char(to_timestamp(slot_start_s) AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York', 'YYYY-MM-DD HH24:MI:SS') AS local_start
 FROM
     prices;

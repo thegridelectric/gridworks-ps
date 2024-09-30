@@ -16,6 +16,7 @@ class Settings(BaseSettings):
         "postgresql://gwprice:PASSWD@journaldb.electricity.works/pricedb"
     )
     db_pass: SecretStr = SecretStr("Passwd")
+    isone_api_pass: SecretStr = SecretStr("IsoAPI")
 
     model_config = ConfigDict(
         env_prefix="gwprice_",
