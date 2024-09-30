@@ -18,7 +18,7 @@ from gwprice.my_p_nodes import MyPNodes
 from gwprice.type_helpers import Price
 
 
-def fetch_with_retry(url: str, auth: HTTPBasicAuth, retries: int = 3, delay: int = 5):
+def fetch_with_retry(url: str, auth: HTTPBasicAuth, retries: int = 3, delay: int = 5) -> Optional[str]:
     for attempt in range(retries):
         try:
             response = requests.get(url, auth=auth)
@@ -27,10 +27,14 @@ def fetch_with_retry(url: str, auth: HTTPBasicAuth, retries: int = 3, delay: int
         except requests.exceptions.RequestException as e:
             print(f"Attempt {attempt + 1} failed: {e}. Retrying in {delay} seconds...")
             time.sleep(delay)
-    raise Exception(f"Failed to fetch data at {url} after {retries} attempts")
+    print(f"Failed to fetch data at {url} after {retries} attempts")
+    return None
 
 
-def add_hourly_prices_for_day(db: Session, market_name: str, date_str: str):
+def add_hourly_prices_for_day(db: Session, market_name: str, date_str: str) -> bool:
+    """
+    Returns False if it gets no prices 
+    """
     market = next((market for market in MyMarkets if market.name == market_name), None)
     if market is None:
         raise Exception(f"No market with name {market_name} in MyMarkets")
@@ -59,31 +63,36 @@ def add_hourly_prices_for_day(db: Session, market_name: str, date_str: str):
     }
 
     xml_data = fetch_with_retry(request_info["url"], request_info["auth"])
+    if xml_data is None:
+        return False
+    else:
+        tree = ET.ElementTree(ET.fromstring(xml_data))
+        root = tree.getroot()
+        namespace = {"ns": "http://WEBSERV.iso-ne.com"}
 
-    tree = ET.ElementTree(ET.fromstring(xml_data))
-    root = tree.getroot()
-    namespace = {"ns": "http://WEBSERV.iso-ne.com"}
+        prices = []
 
-    prices = []
-
-    for hourly_lmp in root.findall("ns:HourlyLmp", namespace):
-        loc_id = hourly_lmp.find("ns:Location", namespace).attrib.get("LocId")
-        if loc_id == p_node.iso_id:
-            begin_date = hourly_lmp.find("ns:BeginDate", namespace).text
-            lmp_total = float(hourly_lmp.find("ns:LmpTotal", namespace).text)
-            begin_date_obj = datetime.strptime(begin_date, "%Y-%m-%dT%H:%M:%S.%f%z")
-            slot_start_s = int(begin_date_obj.timestamp())
-            prices.append(
-                Price(
-                    market_slot_name=f"{market.name}.{slot_start_s}",
-                    market_name=market.name,
-                    slot_start_s=slot_start_s,
-                    value=lmp_total,
+        for hourly_lmp in root.findall("ns:HourlyLmp", namespace):
+            loc_id = hourly_lmp.find("ns:Location", namespace).attrib.get("LocId")
+            if loc_id == p_node.iso_id:
+                begin_date = hourly_lmp.find("ns:BeginDate", namespace).text
+                lmp_total = float(hourly_lmp.find("ns:LmpTotal", namespace).text)
+                begin_date_obj = datetime.strptime(begin_date, "%Y-%m-%dT%H:%M:%S.%f%z")
+                slot_start_s = int(begin_date_obj.timestamp())
+                prices.append(
+                    Price(
+                        market_slot_name=f"{market.name}.{slot_start_s}",
+                        market_name=market.name,
+                        slot_start_s=slot_start_s,
+                        value=lmp_total,
+                    )
                 )
-            )
 
-    db_prices = [pyd_to_sql(price) for price in prices]
-    bulk_insert_prices(db, db_prices)
+        db_prices = [pyd_to_sql(price) for price in prices]
+        if db_prices:
+            bulk_insert_prices(db, db_prices)
+            return True
+        return False
 
 
 def generate_day_strings(year: int, month: int) -> list[str]:

@@ -22,6 +22,9 @@ class Market(GwBase):
     type_name: Literal["market"] = "market"
     version: Literal["000"] = "000"
 
+    def __hash__(self) -> int:
+        return hash(self.name)
+
     @model_validator(mode="after")
     def check_axiom_1(self) -> Self:
         """

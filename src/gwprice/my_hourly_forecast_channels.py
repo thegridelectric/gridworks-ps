@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict
 
 from gwprice.types.hourly_price_forecast_channel import HourlyPriceForecastChannel
 
@@ -36,6 +36,6 @@ MyChannelDicts = [
         "MethodAlias": "isoneexpress.finalrt.hr.web",
     },
 ]
-MyForecastChannels: List[HourlyPriceForecastChannel] = [
-    HourlyPriceForecastChannel.from_dict(d) for d in MyChannelDicts
-]
+MyForecastChannels: Dict[str, HourlyPriceForecastChannel] = {
+    d["Name"]: HourlyPriceForecastChannel.from_dict(d) for d in MyChannelDicts
+}

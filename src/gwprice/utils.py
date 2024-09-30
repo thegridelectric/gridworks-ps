@@ -1,5 +1,5 @@
 import json
-
+import pendulum
 from sqlalchemy.orm import Session
 
 from gwprice.codec import sql_to_pyd
@@ -13,6 +13,21 @@ from gwprice.my_forecast_methods import MyForecastMethods
 from gwprice.my_hourly_forecast_channels import MyForecastChannels
 from gwprice.my_markets import MyMarkets
 from gwprice.my_p_nodes import MyPNodes
+
+
+
+def rt_to_da_name(market_name: str) -> str:
+    parts = market_name.split('.')
+    # Check if the second part is 'rt60gate5' and replace it with 'da60'
+    if len(parts) > 1 and parts[1] == "rt60gate5":
+        parts[1] = "da60"
+    return '.'.join(parts)
+
+
+def isone_date_str(time_s: int, channel: HourlyPriceForecastChannelSql) -> str:
+    dt = pendulum.from_timestamp(time_s, channel.market.p_node.tz)
+    return dt.strftime("%Y%m%d")
+
 
 
 def check_locals(db: Session):
@@ -58,7 +73,7 @@ def check_locals(db: Session):
 
     db_channels = [sql_to_pyd(m) for m in db.query(HourlyPriceForecastChannelSql).all()]
     same = True
-    for c in MyForecastChannels:
+    for c in MyForecastChannels.values():
         c_db = next((c_db for c_db in db_channels if c_db.name == c.name), None)
         if c != c_db:
             same = False

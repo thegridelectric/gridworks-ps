@@ -33,6 +33,15 @@ MyMarketDicts = [
     {
         "TypeName": "market",
         "Version": "000",
+        "Name": "e.da60.hw1.isone.ver.keene",
+        "MarketTypeName": "da60",
+        "PNodeAlias": "hw1.isone.ver.keene",
+        "Category": "Energy",
+        "Unit": "USDPerMWh",
+    },
+    {
+        "TypeName": "market",
+        "Version": "000",
         "Name": "e.da60.hw1.isone.4001",
         "MarketTypeName": "da60",
         "PNodeAlias": "hw1.isone.4001",
@@ -66,6 +75,16 @@ MyMarketDicts = [
         "Category": "Energy",
         "Unit": "USDPerMWh",
     },
+    {
+        "TypeName": "market",
+        "Version": "000",
+        "Name": "e.da60.hw1.isone.4007",
+        "MarketTypeName": "da60",
+        "PNodeAlias": "hw1.isone.4007",
+        "Category": "Energy",
+        "Unit": "USDPerMWh",
+    },
+
 ]
 
 MyMarkets: List[Market] = [Market.from_dict(d) for d in MyMarketDicts]

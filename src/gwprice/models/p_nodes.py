@@ -18,6 +18,7 @@ class PNodeSql(Base):
     iso_id = Column(String)
     iso_location_info = Column(String)
     markets = relationship("MarketSql", back_populates="p_node")
+    tz = Column(String, nullable=False, default="America/New_York")
 
     def __repr__(self):
         return self.alias
@@ -29,6 +30,7 @@ class PNodeSql(Base):
         d = {
             "Id": self.id,
             "Alias": self.alias,
+            "Tz": self.tz
         }
         if self.prev_alias:
             d["PrevAlias"] = self.prev_alias

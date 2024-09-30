@@ -25,7 +25,7 @@ def seed_database(db: Session, update_prices: bool = False):
         db, [pyd_to_sql(forecast) for forecast in MyForecastMethods]
     )
     bulk_insert_markets(db, [pyd_to_sql(market) for market in MyMarkets])
-    bulk_insert_channels(db, [pyd_to_sql(channel) for channel in MyForecastChannels])
+    bulk_insert_channels(db, [pyd_to_sql(channel) for channel in MyForecastChannels.values()])
 
     if update_prices:
         folder_path = "input_data/electricity_prices/isone"
