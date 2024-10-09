@@ -75,15 +75,15 @@ def get_day_ahead_prices(market_name: str, date_str: str) -> List[Price]:
         return prices
         
 
-def get_48h_day_ahead_forecast(start_time:pendulum.DateTime, market_name:str)->HourlyPriceForecastSql:
+def get_48h_day_ahead_forecast(start_time:pendulum.DateTime)->HourlyPriceForecastSql:
 
     if start_time.minute!=0 or start_time.second!=0:
         raise ValueError("The start time must be rounded at the hour (0 min and 0 sec)")
 
     today = start_time.strftime("%Y%m%d")
     tomorrow = start_time.add(days=1).strftime("%Y%m%d")
-    forecast_today = get_day_ahead_prices(market_name, today)
-    forecast_tomorrow = get_day_ahead_prices(market_name, tomorrow)
+    forecast_today = get_day_ahead_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=today)
+    forecast_tomorrow = get_day_ahead_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=tomorrow)
 
     prices_today = [x.value for x in forecast_today]
     prices_tomorrow = [x.value for x in forecast_tomorrow]
@@ -94,9 +94,9 @@ def get_48h_day_ahead_forecast(start_time:pendulum.DateTime, market_name:str)->H
         prices = prices_today[start_time.hour:] + prices_tomorrow + prices_tomorrow[:start_time.hour]
 
     forecast = HourlyPriceForecastSql(
-        price_uid = 'a',
-        from_g_node_alias = 'a',
-        channel_name = 'a',
+        price_uid = 'x',
+        from_g_node_alias = "hw1.isone.ps",
+        channel_name = "keene.48",
         start_unix_s = start_time.timestamp(),
         hour_starting_prices = prices,
         forecast_created_s = pendulum.now().timestamp()
@@ -108,8 +108,8 @@ def get_48h_day_ahead_forecast(start_time:pendulum.DateTime, market_name:str)->H
 if __name__ == '__main__':
 
     import matplotlib.pyplot as plt
-    start_time = pendulum.datetime(2024,10,1,12,0,0)
-    forecast = get_48h_day_ahead_forecast(start_time, market_name="e.da60.hw1.isone.ver.keene")
+    start_time = pendulum.datetime(2024,10,1,13,0,0)
+    forecast = get_48h_day_ahead_forecast(start_time)
     plt.step(range(48), forecast.hour_starting_prices, where="post")
     plt.show()
 
