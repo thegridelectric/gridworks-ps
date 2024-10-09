@@ -13,7 +13,7 @@ DEFAULT_ENV_FILE = ".env"
 class Settings(BaseSettings):
     rabbit: RabbitBrokerClient = RabbitBrokerClient()
     db_url: SecretStr = SecretStr(
-        "postgresql://gwprice:PASSWD@journaldb.electricity.works/pricedb"
+        "postgresql://gwprice:PASSWD@pricedb.electricity.works/pricedb"
     )
     db_pass: SecretStr = SecretStr("Passwd")
     isone_api_pass: SecretStr = SecretStr("IsoAPI")

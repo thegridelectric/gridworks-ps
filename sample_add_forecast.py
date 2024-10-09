@@ -12,7 +12,7 @@ from sqlalchemy import func
 
 channel_name = "maine.perfect.48"
 channel = next(
-    (channel for channel in MyForecastChannels if channel.name == channel_name), None
+    (channel for channel in MyForecastChannels.values() if channel.name == channel_name), None
 )
 
 db.query(func.min(PriceSql.slot_start_s)).filter(

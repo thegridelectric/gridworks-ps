@@ -24,6 +24,10 @@ from gwprice.types import (
 app = FastAPI()
 
 
+@app.get("/hello")
+def get_hello():
+    return {"hi": "there"}
+
 @app.get("/p-nodes", response_model=List[PNode])
 def get_p_nodes(db: Session = Depends(get_db)) -> List[PNode]:
     sql_p_nodes = db.query(PNodeSql).all()
@@ -46,13 +50,14 @@ def get_forecast_methods(db: Session = Depends(get_db)) -> List[ForecastMethod]:
 
 
 @app.get(
-    "/forecast/{channel_name}/{start_unix_s}",
+    "/forecast/{channel_name_lrh}/{start_unix_s}",
     response_model=Optional[HourlyPriceForecast],
 )
 def get_forecast(
-    channel_name: str, start_unix_s: int, db: Session = Depends(get_db)
+    channel_name_lrh: str, start_unix_s: int, db: Session = Depends(get_db)
 ) -> Optional[HourlyPriceForecast]:
     # Query for the latest forecast matching the given channel_name and start_unix_s
+    channel_name = channel_name_lrh.replace("-", ".")
     forecast = (
         db.query(HourlyPriceForecastSql)
         .filter(HourlyPriceForecastSql.channel_name == channel_name)
@@ -90,12 +95,13 @@ def get_forecast_by_id(
 
 
 @app.get(
-    "/latest-forecast/{channel_name}",
+    "/latest-forecast/{channel_name_lrh}",
     response_model=Optional[HourlyPriceForecast],
 )
 def get_latest_forecast(
-    channel_name: str, db: Session = Depends(get_db)
+    channel_name_lrh: str, db: Session = Depends(get_db)
 ) -> Optional[HourlyPriceForecast]:
+    channel_name = channel_name_lrh.replace("-", ".")
     current_time = int(time.time())
 
     # Query to find forecasts with the specified channel name and conditions
