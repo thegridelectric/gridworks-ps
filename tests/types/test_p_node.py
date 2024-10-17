@@ -10,6 +10,7 @@ def test_p_node_generated() -> None:
         "IsoId": "43790",
         "IsoLocationInfo": "LD.KEENE_RD46, NETWORK NODE",
         "DisplayName": "Keene Rd PNode",
+        "Tz": "America/New_York",
         "TypeName": "p.node",
         "Version": "000",
     }
