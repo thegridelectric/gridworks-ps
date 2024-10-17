@@ -122,13 +122,13 @@ from gw import check_is_market_slot_name_lrd_format</xsl:text>
 </xsl:for-each>
 </xsl:if>
 <xsl:text>
-from gwprice.types.gw_base import GwBase</xsl:text>
+from gw.named_types.gw_base import GwBase</xsl:text>
 <xsl:for-each select="$airtable//TypeAttributes/TypeAttribute[(VersionedType = $versioned-type-id)]">
 
 
 <xsl:if test="(IsType = 'true') and (normalize-space(SubTypeDataClass) = '' or IsList = 'true')">
 <xsl:text>
-from gwprice.types.</xsl:text>
+from gwprice.named_types.</xsl:text>
 <xsl:call-template name="python-case">
     <xsl:with-param name="camel-case-text" select="translate(SubTypeName,'.','_')"  />
 </xsl:call-template>

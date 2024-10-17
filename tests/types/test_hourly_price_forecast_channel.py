@@ -1,6 +1,6 @@
 """Tests hourly.price.forecast.channel type, version 000"""
 
-from gwprice.types import HourlyPriceForecastChannel
+from gwprice.named_types import HourlyPriceForecastChannel
 
 
 def test_hourly_price_forecast_channel_generated() -> None:

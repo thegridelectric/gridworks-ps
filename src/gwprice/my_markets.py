@@ -1,6 +1,6 @@
 from typing import List
 
-from gwprice.types.market import Market
+from gwprice.named_types.market import Market
 
 MyMarketDicts = [
     {
@@ -84,7 +84,6 @@ MyMarketDicts = [
         "Category": "Energy",
         "Unit": "USDPerMWh",
     },
-
 ]
 
 MyMarkets: List[Market] = [Market.from_dict(d) for d in MyMarketDicts]

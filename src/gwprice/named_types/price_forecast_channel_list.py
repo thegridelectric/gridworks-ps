@@ -2,11 +2,12 @@
 
 from typing import List, Literal
 
+from gw.named_types import GwBase
+
+from gwprice.named_types.hourly_price_forecast_channel import HourlyPriceForecastChannel
 from gwprice.property_format import (
     LeftRightDot,
 )
-from gwprice.types.gw_base import GwBase
-from gwprice.types.hourly_price_forecast_channel import HourlyPriceForecastChannel
 
 
 class PriceForecastChannelList(GwBase):

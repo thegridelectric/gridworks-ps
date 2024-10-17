@@ -25,7 +25,6 @@
                 <OverwriteMode>Always</OverwriteMode>
                 <xsl:element name="FileContents">
 <xsl:text>""" List of all the types """
-from gwprice.types.gw_base import GwBase
 </xsl:text>
 <xsl:for-each select="$airtable//VersionedTypes/VersionedType[
   count(Protocols[text()='gwprice']) > 0 and
@@ -47,7 +46,7 @@ from gwprice.types.gw_base import GwBase
 </xsl:variable>
 
 <xsl:text>
-from gwprice.types.</xsl:text>
+from gwprice.named_types.</xsl:text>
 <xsl:value-of select="translate(TypeName,'.','_')"/>
 <xsl:text> import </xsl:text>
 <xsl:value-of select="$python-class-name"/>
@@ -57,7 +56,7 @@ from gwprice.types.</xsl:text>
 
 
 __all__ = [
-    "GwBase",</xsl:text>
+    </xsl:text>
 
 
 <xsl:for-each select="$airtable//VersionedTypes/VersionedType[

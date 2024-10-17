@@ -1,8 +1,10 @@
 """Type hourly.price.forecast, version 000"""
+
 import uuid
 from typing import List, Literal, Optional
 
-from pydantic import field_validator, model_validator, Field
+from gw.named_types import GwBase
+from pydantic import Field, field_validator, model_validator
 from typing_extensions import Self
 
 from gwprice.property_format import (
@@ -10,7 +12,6 @@ from gwprice.property_format import (
     UTCSeconds,
     UUID4Str,
 )
-from gwprice.types.gw_base import GwBase
 
 
 class HourlyPriceForecast(GwBase):

@@ -1,6 +1,6 @@
 """Tests hourly.price.forecast type, version 000"""
 
-from gwprice.types import HourlyPriceForecast
+from gwprice.named_types import HourlyPriceForecast
 
 
 def test_hourly_price_forecast_generated() -> None:

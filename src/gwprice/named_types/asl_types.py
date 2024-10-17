@@ -2,17 +2,18 @@
 
 from typing import Dict, List, no_type_check
 
-from gwprice.types.forecast_method import ForecastMethod
-from gwprice.types.get_hourly_price_forecast_channel import (
+from gw.named_types import GwBase
+
+from gwprice.named_types.forecast_method import ForecastMethod
+from gwprice.named_types.get_hourly_price_forecast_channel import (
     GetHourlyPriceForecastChannel,
 )
-from gwprice.types.gw_base import GwBase
-from gwprice.types.hourly_price_csv import HourlyPriceCsv
-from gwprice.types.hourly_price_forecast import HourlyPriceForecast
-from gwprice.types.hourly_price_forecast_channel import HourlyPriceForecastChannel
-from gwprice.types.market import Market
-from gwprice.types.p_node import PNode
-from gwprice.types.price_forecast_channel_list import PriceForecastChannelList
+from gwprice.named_types.hourly_price_csv import HourlyPriceCsv
+from gwprice.named_types.hourly_price_forecast import HourlyPriceForecast
+from gwprice.named_types.hourly_price_forecast_channel import HourlyPriceForecastChannel
+from gwprice.named_types.market import Market
+from gwprice.named_types.p_node import PNode
+from gwprice.named_types.price_forecast_channel_list import PriceForecastChannelList
 
 TypeByName: Dict[str, GwBase] = {}
 

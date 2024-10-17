@@ -1,7 +1,7 @@
 """Tests forecast.method type, version 000"""
 
 from gwprice.enums import MarketCategory
-from gwprice.types import ForecastMethod
+from gwprice.named_types import ForecastMethod
 
 
 def test_forecast_method_generated() -> None:

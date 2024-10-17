@@ -2,6 +2,7 @@
 
 from typing import Literal
 
+from gw.named_types import GwBase
 from pydantic import model_validator
 from typing_extensions import Self
 
@@ -10,7 +11,6 @@ from gwprice.property_format import (
     LeftRightDot,
     MarketName,
 )
-from gwprice.types.gw_base import GwBase
 
 
 class Market(GwBase):

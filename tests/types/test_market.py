@@ -1,6 +1,6 @@
 """Tests market type, version 000"""
 
-from gwprice.types import Market
+from gwprice.named_types import Market
 
 
 def test_market_generated() -> None:

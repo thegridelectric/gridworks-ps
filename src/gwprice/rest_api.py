@@ -13,7 +13,7 @@ from gwprice.models import (
     HourlyPriceForecastSql,
     PNodeSql,
 )
-from gwprice.types import (
+from gwprice.named_types import (
     ForecastMethod,
     HourlyPriceForecast,
     HourlyPriceForecastChannel,
@@ -27,6 +27,7 @@ app = FastAPI()
 @app.get("/hello")
 def get_hello():
     return {"hi": "there"}
+
 
 @app.get("/p-nodes", response_model=List[PNode])
 def get_p_nodes(db: Session = Depends(get_db)) -> List[PNode]:

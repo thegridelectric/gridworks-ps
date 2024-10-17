@@ -2,9 +2,10 @@
 
 from typing import Literal, Optional
 
+from gw.named_types import GwBase
+
 from gwprice.enums import MarketCategory
 from gwprice.property_format import LeftRightDot
-from gwprice.types.gw_base import GwBase
 
 
 class ForecastMethod(GwBase):

@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from typing import List, Literal
 
 import pendulum
+from gw.named_types import GwBase
 from pydantic import StrictInt, model_validator
 from typing_extensions import Self
 
@@ -15,7 +16,6 @@ from gwprice.property_format import (
     MarketName,
     UUID4Str,
 )
-from gwprice.types.gw_base import GwBase
 
 
 class HourlyPriceCsv(GwBase):

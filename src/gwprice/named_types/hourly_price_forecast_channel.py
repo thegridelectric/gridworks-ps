@@ -2,6 +2,7 @@
 
 from typing import Literal
 
+from gw.named_types import GwBase
 from pydantic import PositiveInt
 
 # from gwprice.my_forecast_methods import MyForecastMethods
@@ -10,7 +11,6 @@ from gwprice.property_format import (
     LeftRightDot,
     MarketName,
 )
-from gwprice.types.gw_base import GwBase
 
 
 class HourlyPriceForecastChannel(GwBase):
