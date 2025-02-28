@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 from typing import Optional, List
 import pendulum
+import csv
 
 import dotenv
 import requests
@@ -32,13 +33,14 @@ def fetch_with_retry(url: str, auth: HTTPBasicAuth, retries: int = 3, delay: int
     return None
 
 
-def get_day_ahead_prices(market_name: str, date_str: str) -> List[Price]:
+def get_prices(market_name: str, date_str: str) -> List[Price]:
 
     market = [market for market in MyMarkets if market.name == market_name][0]
     p_node = [p_node for p_node in MyPNodes if p_node.alias == market.p_node_alias][0]
+    type = 'da' if 'da60' in market_name else 'rt'
 
     request_info = {
-        "url": f"https://webservices.iso-ne.com/api/v1.1/hourlylmp/da/final/day/{date_str}/location/{p_node.iso_id}",
+        "url": f"https://webservices.iso-ne.com/api/v1.1/hourlylmp/{type}/final/day/{date_str}/location/{p_node.iso_id}",
         "auth": HTTPBasicAuth(
             username="jmillar@gridworks-consulting.com",
             password=Settings(
@@ -82,8 +84,8 @@ def get_48h_day_ahead_forecast(start_time:pendulum.DateTime)->HourlyPriceForecas
 
     today = start_time.strftime("%Y%m%d")
     tomorrow = start_time.add(days=1).strftime("%Y%m%d")
-    forecast_today = get_day_ahead_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=today)
-    forecast_tomorrow = get_day_ahead_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=tomorrow)
+    forecast_today = get_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=today)
+    forecast_tomorrow = get_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=tomorrow)
 
     prices_today = [x.value for x in forecast_today]
     prices_tomorrow = [x.value for x in forecast_tomorrow]
@@ -108,9 +110,38 @@ def get_48h_day_ahead_forecast(start_time:pendulum.DateTime)->HourlyPriceForecas
 if __name__ == '__main__':
 
     import matplotlib.pyplot as plt
-    start_time = pendulum.datetime(2024,10,1,13,0,0)
-    forecast = get_48h_day_ahead_forecast(start_time)
-    plt.step(range(48), forecast.hour_starting_prices, where="post")
-    plt.show()
+    # ORIGINAL USE
+    # start_time = pendulum.datetime(2025,2,27,13,0,0)
+    # forecast = get_48h_day_ahead_forecast(start_time)
+    # plt.step(range(48), forecast.hour_starting_prices, where="post")
+    # plt.show()
+    # END
 
+    start_time = pendulum.datetime(2023,9,30)
     
+    all_da_prices, all_da_times = [], []
+    all_rt_prices, all_rt_times = [], [] 
+    while start_time < pendulum.datetime(2024, 4, 30):
+    # while start_time < pendulum.datetime(2023, 10, 30):
+        start_time = start_time.add(days=1)
+        print(start_time)
+        da_prices = get_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=start_time.strftime("%Y%m%d"))
+        all_da_prices.extend([x.value for x in da_prices])
+        all_da_times.extend([x.slot_start_s for x in da_prices])
+        rt_prices = get_prices(market_name="e.rt60gate5.hw1.isone.ver.keene", date_str=start_time.strftime("%Y%m%d"))
+        all_rt_prices.extend([x.value for x in rt_prices])
+        all_rt_times.extend([x.slot_start_s for x in rt_prices])
+        if all_da_times != all_rt_times:
+            break
+
+    with open('winter_2023_2024_prices.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['time', 'dayahead', 'realtime'])
+        for item1, item2, item3 in zip(all_da_times, all_da_prices, all_rt_prices):
+            writer.writerow([item1, item2, item3])
+
+    all_da_times = [pendulum.from_timestamp(x, tz='America/New_York') for x in all_rt_times]
+    plt.step(all_da_times, all_da_prices, where="post", label='Day ahead')
+    plt.step(all_da_times, all_rt_prices, where="post", label='Real time')
+    plt.legend()
+    plt.show()
