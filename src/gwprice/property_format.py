@@ -250,10 +250,12 @@ def is_uuid4_str(v: str) -> str:
 def is_market_name(v: str) -> None:
     try:
         x = v.split(".")
-    except AttributeError:
-        raise ValueError(f"{v} failed to split on '.'")
+    except AttributeError as e:
+        raise ValueError(f"{v} failed to split on '.'") from e
     if len(x) < 3:
         raise ValueError("MarketNames need at least 3 words")
+    if x[0] not in {"e", "r", "d"}:
+        raise ValueError(f"{v} first word must be e,r or d (energy, regulation, distribution)")
     if x[1] not in MarketTypeName.values():
         raise ValueError(f"{v} not recognized MarketType")
     g_node_alias = ".".join(x[2:])
@@ -289,15 +291,15 @@ def is_market_slot_name(v: str) -> None:
     """
     try:
         x = v.split(".")
-    except AttributeError:
-        raise ValueError(f"{v} failed to split on '.'")
+    except AttributeError as e:
+        raise ValueError(f"{v} failed to split on '.'") from e
     slot_start = x[-1]
     if len(slot_start) != 10:
         raise ValueError(f"slot start {slot_start} not of length 10")
     try:
         slot_start = int(slot_start)
-    except ValueError:
-        raise ValueError(f"slot start {slot_start} not an int")
+    except ValueError as e:
+        raise ValueError(f"slot start {slot_start} not an int") from e
     is_market_name(".".join(x[:-1]))
     market_type_name = x[1]
     market_duration_minutes = MarketMinutes[market_type_name]

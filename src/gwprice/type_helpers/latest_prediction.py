@@ -2,7 +2,7 @@ from pydantic import field_validator, model_validator
 from typing_extensions import Self
 
 from gwprice.my_markets import MyMarkets
-from gwprice.named_types import GwBase
+from gw.named_types import GwBase
 from gwprice.property_format import MarketName, MarketSlotName, UTCSeconds
 
 

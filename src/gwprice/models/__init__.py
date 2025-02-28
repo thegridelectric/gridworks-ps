@@ -5,6 +5,8 @@ from gwprice.models.latest_predictions import LatestPredictionSql
 from gwprice.models.markets import MarketSql
 from gwprice.models.p_nodes import PNodeSql
 from gwprice.models.prices import PriceSql
+from gwprice.models.prices import bulk_insert_prices
+
 
 __all__ = [
     "ForecastMethodSql",
@@ -14,4 +16,5 @@ __all__ = [
     "MarketSql",
     "PNodeSql",
     "PriceSql",
+    "bulk_insert_prices",
 ]
