@@ -1,29 +1,21 @@
-import time
-import uuid
-import dotenv
 import uvicorn
-import zipfile
-import pendulum
-import traceback
-import numpy as np
-import pandas as pd
-from datetime import timedelta
 from pydantic import BaseModel, Field
 from typing import List, Optional, Union
-import asyncio
-import async_timeout
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
-from fastapi.responses import FileResponse
 from pathlib import Path
 import csv
 import pytz
 from datetime import datetime
+import httpx
+import time
+import os
+import pendulum
 
 class PriceUpdate(BaseModel):
-    newLmpList: List[float]
-    newTariffList: List[float]
+    unix_s: List[float]
+    lmp: List[float]
+    dist: List[float]
 
 
 class PriceApi():
@@ -47,6 +39,21 @@ class PriceApi():
         self.app.post("/update_prices")(self.update_prices)
         uvicorn.run(self.app, host="0.0.0.0", port=8000)
 
+    async def send_to_visualizer_api(self, data):
+        url = "https://visualizer.electricity.works/plots"
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.post(url, json=data)
+                if response.status_code == 200:
+                    print("Successfully sent prices to visualizer API")
+                    return response.json()
+                else:
+                    print(f"Failed to send data. Status code: {response.status_code}")
+                    return None
+        except httpx.RequestError as e:
+            print(f"An error occurred while sending data: {e}")
+            return None
+
     async def get_default_prices(self):
         prices = await self.read_from_csv(default=True)
         return prices
@@ -56,6 +63,7 @@ class PriceApi():
         return prices
 
     async def read_from_csv(self, default=False):
+        unix_sec = []
         dist_usd_mwh = []
         lmp_usd_mwh = []
         try:
@@ -67,72 +75,35 @@ class PriceApi():
                 reader = csv.reader(file)
                 next(reader)
                 for row in reader:
-                    dist_usd_mwh.append(float(row[0]))
-                    lmp_usd_mwh.append(float(row[1]))
-                if len(dist_usd_mwh)<72 or len(lmp_usd_mwh)<72:
-                    raise Exception("Price forecasts must be at least 72 hours long")
+                    try:
+                        unix_sec.append(float(row[0]))
+                        dist_usd_mwh.append(float(row[1]))
+                        lmp_usd_mwh.append(float(row[2]))
+                    except:
+                        continue
         except Exception as e:
             raise Exception(e)
         
-        if datetime.now(tz=self.timezone) < datetime(2025, 2, 20, 17, tzinfo=self.timezone):
-            # Get the current hour
-            now = datetime.now(tz=self.timezone)
-            current_hour = now.hour
-            day_offset = (now.day % 3) * 24
-            # Calculate the starting hour for the 48-hour forecast
-            start_hour = (day_offset + current_hour + 1) % 72
-            # Wrap the lists for the 48-hour forecast
-            dp_forecast_usd_per_mwh = [dist_usd_mwh[(start_hour + i) % 72] for i in range(48)]
-            lmp_forecast_usd_per_mwh = [lmp_usd_mwh[(start_hour + i) % 72] for i in range(48)]
-        else:
-            time_since_21_feb = (datetime.now(tz=self.timezone).replace(minute=0, second=0, microsecond=0)
-                                 - datetime(2025, 2, 20, 17, tzinfo=self.timezone))
-            start_hour = int(time_since_21_feb.total_seconds() / 3600)
-            dp_forecast_usd_per_mwh = [dist_usd_mwh[start_hour + i] for i in range(48)]
-            lmp_forecast_usd_per_mwh = [lmp_usd_mwh[start_hour + i] for i in range(48)]
-
+        current_time = time.time()
+        start_index = None
+        for i, unix in enumerate(unix_sec):
+            if unix > current_time:
+                print(f"Starting at {pendulum.from_timestamp(unix, tz='America/New_York')}")
+                start_index = i-1
+                break
+        end_index = start_index + 48
+        
         result = {
-            'lmp': lmp_forecast_usd_per_mwh,
-            'dist': dp_forecast_usd_per_mwh,
-            'energy': [round(x+y,2) for x,y in zip(dp_forecast_usd_per_mwh, lmp_forecast_usd_per_mwh)]
+            'unix_s': unix_sec[start_index:end_index],
+            'lmp': lmp_usd_mwh[start_index:end_index],
+            'dist': dist_usd_mwh[start_index:end_index],
+            'energy': [round(x + y, 2) for x, y in zip(lmp_usd_mwh[start_index:end_index], 
+                                                       dist_usd_mwh[start_index:end_index])]
         }
         return result
     
     async def update_prices(self, prices: PriceUpdate):
-        try:
-            time_since_21_feb = (datetime.now(tz=self.timezone).replace(minute=0, second=0, microsecond=0)
-                                - datetime(2025, 2, 20, 17, tzinfo=self.timezone))
-            start_hour = int(time_since_21_feb.total_seconds() / 3600)
-
-            file_path = Path(f"basic_api/price_forecast_updated.csv")
-
-            rows = []
-            with open(file_path, mode='r', newline='') as file:
-                reader = csv.reader(file)
-                next(reader)
-                for row in reader:
-                    rows.append(row)
-
-            with open(file_path, mode='w', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow(["Tariff", "LMP"])
-                idx = 0
-                for row in rows:
-                    if start_hour <= idx < start_hour + 24:
-                        new_tariff = prices.newTariffList[idx - start_hour]
-                        new_lmp = prices.newLmpList[idx - start_hour]
-                        writer.writerow([new_tariff, new_lmp])
-                    else:
-                        writer.writerow([float(row[0]), float(row[1])])
-                    idx += 1
-
-            prices = await self.read_from_csv(default=False)
-            return prices
-
-        except Exception as e:
-            print(f"An error occurred while updating the prices: {str(e)}")
-            raise Exception("Failed to update prices")
-
+        return
 
 
 p = PriceApi(running_locally=True)
