@@ -89,7 +89,7 @@ class PriceApi():
         for i, unix in enumerate(unix_sec):
             if unix > current_time:
                 print(f"Starting at {pendulum.from_timestamp(unix, tz='America/New_York')}")
-                start_index = i-1
+                start_index = i
                 break
         end_index = start_index + 48
         
@@ -103,7 +103,44 @@ class PriceApi():
         return result
     
     async def update_prices(self, prices: PriceUpdate):
-        return
+        try:
+            rows = []
+            file_path = Path("basic_api/price_forecast_updated.csv")
+            with open(file_path, mode='r', newline='') as file:
+                reader = csv.reader(file)
+                header = next(reader)
+                rows = list(reader)
+
+            updated_prices = {float(timestamp): (lmp, dist) 
+                            for timestamp, lmp, dist in zip(prices.unix_s, prices.lmp, prices.dist)}
+
+            # Update the rows based on the new prices
+            for row in rows:
+                try:
+                    unix_timestamp = float(row[0])
+                    if unix_timestamp in updated_prices:
+                        print(pendulum.from_timestamp(float(row[0]),tz='America/New_York'))
+                        print(f"Before: {row[2]}, {row[1]}")
+                        lmp, dist = updated_prices[unix_timestamp]
+                        row[1] = dist
+                        row[2] = lmp
+                        print(f"After: {row[2]}, {row[1]}")
+                except Exception as e:
+                    print(f"Error processing row {row}: {e}")
+                    continue
+
+            with open(file_path, mode='w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(header)
+                writer.writerows(rows)
+
+            print(f"Prices updated successfully in {file_path}")
+
+            final_prices = await self.read_from_csv()
+            return final_prices
+
+        except Exception as e:
+            print(f"Error updating prices: {e}")
 
 
 p = PriceApi(running_locally=True)
