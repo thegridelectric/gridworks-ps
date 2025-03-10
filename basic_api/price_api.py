@@ -21,14 +21,9 @@ import csv
 import pytz
 from datetime import datetime
 
-class PriceForecast(BaseModel):
-    dp_usd_per_mwh: List[float]
-    lmp_usd_per_mwh: List[float]
-
-    @property
-    def total_energy(self) -> List[float]:
-        """Calculate the total price forecast by summing dp, lmp, and reg components."""
-        return [dp + lmp for dp, lmp in zip(self.dp_usd_per_mwh, self.lmp_usd_per_mwh)]
+class PriceUpdate(BaseModel):
+    newLmpList: List[float]
+    newTariffList: List[float]
 
 
 class PriceApi():
@@ -37,7 +32,6 @@ class PriceApi():
         self.timezone_str = 'America/New_York'
         self.timezone = pytz.timezone(self.timezone_str)
         self.timeout_seconds = 3*60
-        self.price_forecast: PriceForecast = None
 
     def start(self):
         self.app = FastAPI()
@@ -49,6 +43,7 @@ class PriceApi():
             allow_methods=["*"],
         )
         self.app.post("/get_prices")(self.get_prices)
+        self.app.post("/get_default_prices")(self.get_default_prices)
         self.app.post("/update_prices")(self.update_prices)
         uvicorn.run(self.app, host="0.0.0.0", port=8000)
 
@@ -96,37 +91,48 @@ class PriceApi():
             dp_forecast_usd_per_mwh = [dist_usd_mwh[start_hour + i] for i in range(48)]
             lmp_forecast_usd_per_mwh = [lmp_usd_mwh[start_hour + i] for i in range(48)]
 
-        # Update the price forecasts
-        self.price_forecast = PriceForecast(
-            dp_usd_per_mwh=dp_forecast_usd_per_mwh,
-            lmp_usd_per_mwh=lmp_forecast_usd_per_mwh,
-        )
-
         result = {
-            'lmp': self.price_forecast.lmp_usd_per_mwh,
-            'dist': self.price_forecast.dp_usd_per_mwh,
-            'energy': [round(x,2) for x in self.price_forecast.total_energy]
+            'lmp': lmp_forecast_usd_per_mwh,
+            'dist': dp_forecast_usd_per_mwh,
+            'energy': [round(x+y,2) for x,y in zip(dp_forecast_usd_per_mwh, lmp_forecast_usd_per_mwh)]
         }
-        print(result)
         return result
     
-    async def update_prices(self, prices: PriceForecast):
+    async def update_prices(self, prices: PriceUpdate):
         try:
+            time_since_21_feb = (datetime.now(tz=self.timezone).replace(minute=0, second=0, microsecond=0)
+                                - datetime(2025, 2, 20, 17, tzinfo=self.timezone))
+            start_hour = int(time_since_21_feb.total_seconds() / 3600)
+
             file_path = Path(f"basic_api/price_forecast_updated.csv")
+
+            rows = []
+            with open(file_path, mode='r', newline='') as file:
+                reader = csv.reader(file)
+                next(reader)
+                for row in reader:
+                    rows.append(row)
+
             with open(file_path, mode='w', newline='') as file:
                 writer = csv.writer(file)
-                for dp, lmp in zip(prices.dp_usd_per_mwh, prices.lmp_usd_per_mwh):
-                    writer.writerow([dp, lmp])
-            self.price_forecast = prices
-            result = {
-                'lmp': self.price_forecast.lmp_usd_per_mwh,
-                'dist': self.price_forecast.dp_usd_per_mwh,
-                'energy': [round(x, 2) for x in self.price_forecast.total_energy]
-            }
-            return result
+                writer.writerow(["Tariff", "LMP"])
+                idx = 0
+                for row in rows:
+                    if start_hour <= idx < start_hour + 24:
+                        new_tariff = prices.newTariffList[idx - start_hour]
+                        new_lmp = prices.newLmpList[idx - start_hour]
+                        writer.writerow([new_tariff, new_lmp])
+                    else:
+                        writer.writerow([float(row[0]), float(row[1])])
+                    idx += 1
+
+            prices = await self.read_from_csv(default=False)
+            return prices
+
         except Exception as e:
             print(f"An error occurred while updating the prices: {str(e)}")
             raise Exception("Failed to update prices")
+
 
 
 p = PriceApi(running_locally=True)
