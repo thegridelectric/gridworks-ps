@@ -1,15 +1,13 @@
 import uvicorn
-from pydantic import BaseModel, Field
-from typing import List, Optional, Union
+from pydantic import BaseModel
+from typing import List
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 import csv
 import pytz
-from datetime import datetime
 import httpx
 import time
-import os
 import pendulum
 
 class PriceUpdate(BaseModel):
@@ -19,8 +17,7 @@ class PriceUpdate(BaseModel):
 
 
 class PriceApi():
-    def __init__(self, running_locally):
-        self.running_locally = running_locally        
+    def __init__(self):
         self.timezone_str = 'America/New_York'
         self.timezone = pytz.timezone(self.timezone_str)
         self.timeout_seconds = 3*60
@@ -141,5 +138,5 @@ class PriceApi():
             print(f"Error updating prices: {e}")
 
 
-p = PriceApi(running_locally=True)
+p = PriceApi()
 p.start()
