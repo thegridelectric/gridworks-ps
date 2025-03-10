@@ -65,9 +65,9 @@ class PriceApi():
         lmp_usd_mwh = []
         try:
             if default:
-                file_path = Path(f"basic_api/price_forecast.csv")
+                file_path = Path(f"price_forecast.csv")
             else:
-                file_path = Path(f"basic_api/price_forecast_updated.csv")
+                file_path = Path(f"price_forecast_updated.csv")
             with open(file_path, mode='r', newline='') as file:
                 reader = csv.reader(file)
                 next(reader)
@@ -102,7 +102,7 @@ class PriceApi():
     async def update_prices(self, prices: PriceUpdate):
         try:
             rows = []
-            file_path = Path("basic_api/price_forecast_updated.csv")
+            file_path = Path("price_forecast_updated.csv")
             with open(file_path, mode='r', newline='') as file:
                 reader = csv.reader(file)
                 header = next(reader)
