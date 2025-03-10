@@ -40,7 +40,7 @@ class PriceApi():
         uvicorn.run(self.app, host="0.0.0.0", port=8000)
 
     async def send_to_visualizer_api(self, data):
-        url = "https://visualizer.electricity.works/plots"
+        url = "https://visualizer.electricity.works/prices"
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.post(url, json=data)
@@ -119,12 +119,9 @@ class PriceApi():
                 try:
                     unix_timestamp = float(row[0])
                     if unix_timestamp in updated_prices:
-                        print(pendulum.from_timestamp(float(row[0]),tz='America/New_York'))
-                        print(f"Before: {row[2]}, {row[1]}")
                         lmp, dist = updated_prices[unix_timestamp]
                         row[1] = dist
                         row[2] = lmp
-                        print(f"After: {row[2]}, {row[1]}")
                 except Exception as e:
                     print(f"Error processing row {row}: {e}")
                     continue
@@ -137,6 +134,7 @@ class PriceApi():
             print(f"Prices updated successfully in {file_path}")
 
             final_prices = await self.read_from_csv()
+            await self.send_to_visualizer_api(final_prices)
             return final_prices
 
         except Exception as e:
