@@ -9,6 +9,7 @@ import pytz
 import httpx
 import time
 import pendulum
+from basic_api.day_ahead_forecast import get_48h_day_ahead_forecast
 
 class PriceUpdate(BaseModel):
     unix_s: List[float]
@@ -56,8 +57,29 @@ class PriceApi():
         return prices
 
     async def get_prices(self):
-        prices = await self.read_from_csv(default=False)
-        return prices
+        start_time = pendulum.now(tz='America/New_York').add(hours=1)
+        start_time = pendulum.datetime(start_time.year, start_time.month, start_time.day, start_time.hour)
+        forecast = get_48h_day_ahead_forecast(start_time)
+        # Old code for when the prices were read from a csv file
+        # prices = await self.read_from_csv(default=False)
+
+        unix_times = [forecast.start_unix_s + i*3600 for i in range(48)]
+        datetimes = [pendulum.from_timestamp(x) for x in unix_times]
+        lmp_prices = forecast.hour_starting_prices
+        dist_prices = [
+            487.63 if x.hour in [7,8,9,10,11,16,17,18,19] and x.day in [0,1,2,3,4]
+            else 54.98 if x.hour in [12,13,14,15] and x.day in [0,1,2,3,4]
+            else 50.13
+            for x in datetimes
+        ]
+
+        result = {
+            'unix_s': unix_times,
+            'lmp': lmp_prices,
+            'dist': dist_prices,
+            'energy': [round(x + y, 2) for x, y in zip(lmp_prices, dist_prices)]
+        }
+        return result
 
     async def read_from_csv(self, default=False):
         unix_sec = []

@@ -110,38 +110,42 @@ def get_48h_day_ahead_forecast(start_time:pendulum.DateTime)->HourlyPriceForecas
 if __name__ == '__main__':
 
     import matplotlib.pyplot as plt
-    # ORIGINAL USE
-    # start_time = pendulum.datetime(2025,2,27,13,0,0)
-    # forecast = get_48h_day_ahead_forecast(start_time)
-    # plt.step(range(48), forecast.hour_starting_prices, where="post")
-    # plt.show()
-    # END
-
-    start_time = pendulum.datetime(2023,9,30)
-    
-    all_da_prices, all_da_times = [], []
-    all_rt_prices, all_rt_times = [], [] 
-    while start_time < pendulum.datetime(2024, 4, 30):
-    # while start_time < pendulum.datetime(2023, 10, 30):
-        start_time = start_time.add(days=1)
-        print(start_time)
-        da_prices = get_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=start_time.strftime("%Y%m%d"))
-        all_da_prices.extend([x.value for x in da_prices])
-        all_da_times.extend([x.slot_start_s for x in da_prices])
-        rt_prices = get_prices(market_name="e.rt60gate5.hw1.isone.ver.keene", date_str=start_time.strftime("%Y%m%d"))
-        all_rt_prices.extend([x.value for x in rt_prices])
-        all_rt_times.extend([x.slot_start_s for x in rt_prices])
-        if all_da_times != all_rt_times:
-            break
-
-    with open('winter_2023_2024_prices.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(['time', 'dayahead', 'realtime'])
-        for item1, item2, item3 in zip(all_da_times, all_da_prices, all_rt_prices):
-            writer.writerow([item1, item2, item3])
-
-    all_da_times = [pendulum.from_timestamp(x, tz='America/New_York') for x in all_rt_times]
-    plt.step(all_da_times, all_da_prices, where="post", label='Day ahead')
-    plt.step(all_da_times, all_rt_prices, where="post", label='Real time')
+    start_time = pendulum.now(tz='America/New_York').add(hours=1)
+    print(start_time)
+    start_time = pendulum.datetime(start_time.year, start_time.month, start_time.day, start_time.hour)
+    forecast = get_48h_day_ahead_forecast(start_time)
+    unix_times = [forecast.start_unix_s + i*3600 for i in range(48)]
+    datetimes = [pendulum.from_timestamp(x) for x in unix_times]
+    lmp_prices = forecast.hour_starting_prices
+    dist_prices = [
+        487.63 if x.hour in [7,8,9,10,11,16,17,18,19] and x.day in [0,1,2,3,4]
+        else 54.98 if x.hour in [12,13,14,15] and x.day in [0,1,2,3,4]
+        else 50.13
+        for x in datetimes
+    ]
+    plt.step(datetimes, lmp_prices, where="post", label='LMP')
+    plt.step(datetimes, dist_prices, where="post", label='Dist')
+    # plt.step(datetimes, [x+y for x, y in zip(lmp_prices, dist_prices)], where="post", label='Energy')
     plt.legend()
     plt.show()
+
+    # prices, times = [], []
+    # start_time = pendulum.today(tz='America/New_York')
+    # while start_time < pendulum.today(tz='America/New_York').add(days=2):
+    #     da_prices = get_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=start_time.strftime("%Y%m%d"))
+    #     prices.extend([x.value for x in da_prices])
+    #     times.extend([x.slot_start_s for x in da_prices])
+    #     start_time = start_time.add(days=1)
+    # times = [pendulum.from_timestamp(x, tz='America/New_York') for x in times]
+    # prices = [(t,p) for t,p in zip(times, prices) if t>pendulum.now(tz='America/New_York') and t<pendulum.now(tz='America/New_York').add(days=2)]
+    # times, prices = zip(*prices)
+
+    # # with open('winter_2024_2025_prices.csv', mode='w', newline='') as file:
+    # #     writer = csv.writer(file)
+    # #     writer.writerow(['time', 'dayahead', 'realtime'])
+    # #     for item1, item2, item3 in zip(all_da_times, all_da_prices, all_rt_prices):
+    # #         writer.writerow([item1, item2, item3])
+
+    # plt.step(range(len(prices)), prices, where="post", label='Day ahead')
+    # plt.legend()
+    # plt.show()
