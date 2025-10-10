@@ -32,6 +32,31 @@ def fetch_with_retry(url: str, auth: HTTPBasicAuth, retries: int = 3, delay: int
     print(f"Failed to fetch data at {url} after {retries} attempts")
     return None
 
+def get_current_lmp(market_name: str):
+    market = [market for market in MyMarkets if market.name == market_name][0]
+    p_node = [p_node for p_node in MyPNodes if p_node.alias == market.p_node_alias][0]
+
+    request_info = {
+        "url": f"https://webservices.iso-ne.com/api/v1.1/fiveminutelmp/current/location/{p_node.iso_id}",
+        "auth": HTTPBasicAuth(
+            username="jmillar@gridworks-consulting.com",
+            password=Settings(
+                _env_file=dotenv.find_dotenv()
+            ).isone_api_pass.get_secret_value(),
+        ),
+    }
+
+    xml_data = fetch_with_retry(request_info["url"], request_info["auth"])
+    if xml_data is None:
+        raise ValueError("No data?")
+    else:
+        root = ET.fromstring(xml_data)
+        namespace = {"ns": "http://WEBSERV.iso-ne.com"}
+
+        lmp = float(root.find("ns:LmpTotal", namespaces=namespace).text)
+        # begin_time = root.find("ns:BeginDate", namespaces=namespace).text
+        # print(f"Begin time: {begin_time}, LMP: {lmp}")
+        return lmp
 
 def get_prices(market_name: str, date_str: str) -> List[Price]:
 
@@ -109,6 +134,12 @@ def get_48h_day_ahead_forecast(start_time:pendulum.DateTime)->HourlyPriceForecas
 
 if __name__ == '__main__':
 
+
+    start_time = pendulum.now(tz='America/New_York').add(hours=-10)
+    start_time = pendulum.datetime(start_time.year, start_time.month, start_time.day, start_time.hour)
+    price = get_current_lmp(market_name="e.rt60gate5.hw1.isone.ver.keene")
+    print(f"Current LMP: {price}")
+
     import matplotlib.pyplot as plt
     start_time = pendulum.now(tz='America/New_York').add(hours=1)
     print(start_time)
@@ -126,6 +157,7 @@ if __name__ == '__main__':
     plt.step(datetimes, lmp_prices, where="post", label='LMP')
     plt.step(datetimes, dist_prices, where="post", label='Dist')
     # plt.step(datetimes, [x+y for x, y in zip(lmp_prices, dist_prices)], where="post", label='Energy')
+    plt.title('48 Hour Day Ahead Forecast')
     plt.legend()
     plt.show()
 

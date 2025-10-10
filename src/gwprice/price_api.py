@@ -9,7 +9,7 @@ import pytz
 import httpx
 import time
 import pendulum
-from gwprice.day_ahead_forecast import get_48h_day_ahead_forecast
+from gwprice.day_ahead_forecast import get_48h_day_ahead_forecast, get_current_lmp
 
 class PriceUpdate(BaseModel):
     unix_s: List[float]
@@ -32,7 +32,8 @@ class PriceApi():
             allow_credentials=True,
             allow_methods=["*"],
         )
-        self.app.post("/get_prices")(self.get_prices)
+        self.app.post("/get_prices")(self.get_price_forecasts)
+        self.app.post("/get_real_time_price")(self.get_real_time_price)
         self.app.post("/get_default_prices")(self.get_default_prices)
         self.app.post("/update_prices")(self.update_prices)
         uvicorn.run(self.app, host="0.0.0.0", port=8000)
@@ -56,30 +57,54 @@ class PriceApi():
         prices = await self.read_from_csv(default=True)
         return prices
 
-    async def get_prices(self):
+    async def get_price_forecasts(self):
         start_time = pendulum.now(tz='America/New_York').add(hours=1)
         start_time = pendulum.datetime(start_time.year, start_time.month, start_time.day, start_time.hour)
-        forecast = get_48h_day_ahead_forecast(start_time)
-        # Old code for when the prices were read from a csv file
-        # prices = await self.read_from_csv(default=False)
+        try:
+            forecast = get_48h_day_ahead_forecast(start_time)
+            # Old code for when the prices were read from a csv file
+            # prices = await self.read_from_csv(default=False)
 
-        unix_times = [forecast.start_unix_s + i*3600 for i in range(48)]
-        datetimes = [pendulum.from_timestamp(x) for x in unix_times]
-        lmp_prices = forecast.hour_starting_prices
-        dist_prices = [
-            487.63 if x.hour in [7,8,9,10,11,16,17,18,19] and x.day in [0,1,2,3,4]
-            else 54.98 if x.hour in [12,13,14,15] and x.day in [0,1,2,3,4]
-            else 50.13
-            for x in datetimes
-        ]
+            unix_times = [forecast.start_unix_s + i*3600 for i in range(48)]
+            datetimes = [pendulum.from_timestamp(x) for x in unix_times]
+            lmp_prices = forecast.hour_starting_prices
+            dist_prices = [
+                487.63 if x.hour in [7,8,9,10,11,16,17,18,19] and x.day in [0,1,2,3,4]
+                else 54.98 if x.hour in [12,13,14,15] and x.day in [0,1,2,3,4]
+                else 50.13
+                for x in datetimes
+            ]
 
-        result = {
-            'unix_s': unix_times,
-            'lmp': lmp_prices,
-            'dist': dist_prices,
-            'energy': [round(x + y, 2) for x, y in zip(lmp_prices, dist_prices)]
-        }
-        return result
+            result = {
+                'unix_s': unix_times,
+                'lmp': lmp_prices,
+                'dist': dist_prices,
+                'energy': [round(x + y, 2) for x, y in zip(lmp_prices, dist_prices)]
+            }
+            return result
+        except Exception as e:
+            print(f"Error getting price forecasts: {e}")
+            return None
+
+    async def get_real_time_price(self):
+        now = pendulum.now(tz='America/New_York')
+        try:
+            current_lmp = get_current_lmp(market_name="e.rt60gate5.hw1.isone.ver.keene")
+            current_dist = (
+                487.63 if now.hour in [7,8,9,10,11,16,17,18,19] and now.day in [0,1,2,3,4]
+                else 54.98 if now.hour in [12,13,14,15] and now.day in [0,1,2,3,4]
+                else 50.13
+            )
+            result = {
+                'unix_s': now.timestamp(),
+                'lmp': current_lmp,
+                'dist': current_dist,
+                'energy': round(current_lmp + current_dist, 2)
+            }
+            return result
+        except Exception as e:
+            print(f"Error getting real time price: {e}")
+            return None
 
     async def read_from_csv(self, default=False):
         unix_sec = []
