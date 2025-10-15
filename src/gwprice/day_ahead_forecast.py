@@ -109,8 +109,8 @@ def get_48h_day_ahead_forecast(start_time:pendulum.DateTime)->HourlyPriceForecas
 
     today = start_time.strftime("%Y%m%d")
     tomorrow = start_time.add(days=1).strftime("%Y%m%d")
-    forecast_today = get_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=today)
-    forecast_tomorrow = get_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=tomorrow)
+    forecast_today = get_prices(market_name="e.da60.hw1.isone.4001", date_str=today)
+    forecast_tomorrow = get_prices(market_name="e.da60.hw1.isone.4001", date_str=tomorrow)
 
     prices_today = [x.value for x in forecast_today]
     prices_tomorrow = [x.value for x in forecast_tomorrow]
@@ -124,7 +124,7 @@ def get_48h_day_ahead_forecast(start_time:pendulum.DateTime)->HourlyPriceForecas
         price_uid = 'x',
         from_g_node_alias = "hw1.isone.ps",
         channel_name = "keene.48",
-        start_unix_s = start_time.timestamp(),
+        start_unix_s = start_time.in_timezone('America/New_York').timestamp(),
         hour_starting_prices = prices,
         forecast_created_s = pendulum.now().timestamp()
         )
@@ -164,7 +164,7 @@ if __name__ == '__main__':
     # prices, times = [], []
     # start_time = pendulum.today(tz='America/New_York')
     # while start_time < pendulum.today(tz='America/New_York').add(days=2):
-    #     da_prices = get_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=start_time.strftime("%Y%m%d"))
+    #     da_prices = get_prices(market_name="e.da60.hw1.isone.4001", date_str=start_time.strftime("%Y%m%d"))
     #     prices.extend([x.value for x in da_prices])
     #     times.extend([x.slot_start_s for x in da_prices])
     #     start_time = start_time.add(days=1)
