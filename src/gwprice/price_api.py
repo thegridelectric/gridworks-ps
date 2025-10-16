@@ -2,7 +2,15 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import pendulum
+from pydantic import BaseModel
 from gwprice.get_prices_from_isone_api import get_current_lmp, get_hourly_lmp
+
+
+class PriceRequest(BaseModel):
+    '''Request for the prices for the visualizer'''
+    start_unix_s: float
+    end_unix_s: float
+    timezone_str: str = 'America/New_York'
 
 
 class PriceApi():
@@ -19,7 +27,31 @@ class PriceApi():
         )
         self.app.post("/get_forecast_prices")(self.get_forecast_prices)
         self.app.post("/get_real_time_price")(self.get_real_time_price)
+        self.app.post("/get_prices_visualizer")(self.get_prices_visualizer)
         uvicorn.run(self.app, host="0.0.0.0", port=8000)
+
+    async def get_prices_visualizer(self, request: PriceRequest):
+        start_time = pendulum.from_timestamp(request.start_unix_s, tz=request.timezone_str)
+        end_time = pendulum.from_timestamp(request.end_unix_s, tz=request.timezone_str)
+        num_days = (end_time.date() - start_time.date()).days
+        lmp_prices = []
+        for day in range(num_days):
+            day_time = start_time.add(days=day)
+            prices_day = [
+                x.value for x in get_hourly_lmp(
+                    market_name = "e.da60.hw1.isone.4001", 
+                    date_str = day_time.strftime("%Y%m%d")
+                )
+            ]
+            if day==0:
+                prices_day = prices_day[start_time.hour:]
+            if day==num_days-1:
+                prices_day = prices_day[:end_time.hour]
+            lmp_prices.extend(prices_day)
+        
+        all_hours = [start_time.add(hours=i) for i in range(len(lmp_prices))]
+        dist_prices = [self.get_dist_price(x.hour, x.weekday()) for x in all_hours]
+        return {'lmp': lmp_prices, 'dist': dist_prices}
 
     async def get_forecast_prices(self):
         '''Get the forecast prices for the next 48 hours'''
