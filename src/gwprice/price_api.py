@@ -35,7 +35,7 @@ class PriceApi():
         end_time = pendulum.from_timestamp(request.end_unix_s, tz=request.timezone_str)
         num_days = (end_time.date() - start_time.date()).days
         lmp_prices = []
-        for day in range(num_days):
+        for day in range(num_days+1):
             day_time = start_time.add(days=day)
             prices_day = [
                 x.value for x in get_hourly_lmp(
@@ -45,7 +45,7 @@ class PriceApi():
             ]
             if day==0:
                 prices_day = prices_day[start_time.hour:]
-            if day==num_days-1:
+            if day==num_days:
                 prices_day = prices_day[:end_time.hour]
             lmp_prices.extend(prices_day)
         
