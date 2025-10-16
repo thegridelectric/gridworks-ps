@@ -37,12 +37,15 @@ class PriceApi():
         lmp_prices = []
         for day in range(num_days+1):
             day_time = start_time.add(days=day)
-            prices_day = [
-                x.value for x in get_hourly_lmp(
-                    market_name = "e.da60.hw1.isone.4001", 
-                    date_str = day_time.strftime("%Y%m%d")
-                )
-            ]
+            try:
+                prices_day = [
+                    x.value for x in get_hourly_lmp(
+                        market_name = "e.da60.hw1.isone.4001", 
+                        date_str = day_time.strftime("%Y%m%d")
+                    )
+                ]
+            except Exception as e:
+                prices_day = []
             if day==0:
                 prices_day = prices_day[start_time.hour:]
             if day==num_days:
@@ -117,14 +120,11 @@ class PriceApi():
             return None
 
     def get_dist_price(self, hour: int, weekday: int):
-        print(f"hour: {hour}, weekday: {weekday}")
-        result = (
+        return (
             487.63 if hour in [7,8,9,10,11,16,17,18,19] and weekday<5 
             else 54.98 if hour in [12,13,14,15] and weekday<5
             else 50.13
         )
-        print(f"result: {result}")
-        return result
 
 if __name__ == "__main__":
     p = PriceApi()
