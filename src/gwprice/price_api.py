@@ -51,7 +51,6 @@ class PriceApi():
         
         all_hours = [start_time.add(hours=i) for i in range(len(lmp_prices))]
         dist_prices = [self.get_dist_price(x.hour, x.weekday()) for x in all_hours]
-        print([x.weekday() for x in all_hours])
         return {'lmp': lmp_prices, 'dist': dist_prices}
 
     async def get_forecast_prices(self):
@@ -118,11 +117,14 @@ class PriceApi():
             return None
 
     def get_dist_price(self, hour: int, weekday: int):
-        return (
+        print(f"hour: {hour}, weekday: {weekday}")
+        result = (
             487.63 if hour in [7,8,9,10,11,16,17,18,19] and weekday<5 
             else 54.98 if hour in [12,13,14,15] and weekday<5
             else 50.13
         )
+        print(f"result: {result}")
+        return result
 
 if __name__ == "__main__":
     p = PriceApi()
