@@ -58,8 +58,7 @@ class PriceApi():
         return prices
 
     async def get_price_forecasts(self):
-        start_time = pendulum.now(tz='America/New_York').add(hours=1)
-        start_time = pendulum.datetime(start_time.year, start_time.month, start_time.day, start_time.hour)
+        start_time = pendulum.now(tz='America/New_York').add(hours=1).replace(minute=0, second=0, microsecond=0)
         try:
             forecast = get_48h_day_ahead_forecast(start_time)
             # Old code for when the prices were read from a csv file
