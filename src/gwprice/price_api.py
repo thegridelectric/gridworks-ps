@@ -62,13 +62,16 @@ class PriceApi():
         
         all_hours = [start_time.add(hours=i) for i in range(len(lmp_prices))]
         dist_prices = [self.get_dist_price(x.hour, x.weekday()) for x in all_hours]
+        hour_start_s_list = [int(x.timestamp()) for x in all_hours]
+        energy_list = [round(x+y,3) for x,y in zip(lmp_prices, dist_prices)]
+        print(f"All hours length: {len(all_hours)}, lmp_prices length: {len(lmp_prices)}, dist_prices length: {len(dist_prices)}, energy_list length: {len(energy_list)}")
 
         result = Gw0PriceForecast(
             from_g_node_alias = from_alias.replace("-", "."),
-            hour_start_s = [int(x.timestamp()) for x in all_hours],
+            hour_start_s = hour_start_s_list,
             lmp_list = lmp_prices,
             dist_list = dist_prices,
-            energy_list = [round(x+y,3) for x,y in zip(lmp_prices, dist_prices)]
+            energy_list = energy_list
         )
         return result
 
