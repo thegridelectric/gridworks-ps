@@ -1,4 +1,4 @@
-from .codec import (
+from gwprice.asl.codec import (
     AslCodec,
     AslError,
     AslType,

@@ -273,7 +273,7 @@ def get_current_types() -> dict[str, type[AslType]]:
     """
     Returns the types declared in `asl/types/__init__.py`
     """
-    from meps.asl import types
+    from gwprice.asl import types
     registry = {}
     for name in types.__all__:
         cls = getattr(types, name)
@@ -287,7 +287,7 @@ def get_old_versions() -> dict[str, dict[Optional[str], type[AslType]]]:
      Returns a registry of old versions organized by type_name and version.
     Structure: {type_name: {version: class}}
     """
-    from meps.asl.types import old_versions
+    from gwprice.asl.types import old_versions
     old_types = [getattr(old_versions, name) for name in old_versions.__all__]
 
     old_registry: dict[str, dict[Optional[str], type[AslType]]] = defaultdict(dict)

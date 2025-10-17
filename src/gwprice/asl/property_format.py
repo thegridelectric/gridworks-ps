@@ -2,7 +2,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import Annotated
 
-from meps.asl.enums import MarketTypeName
+from gwprice.asl.enums import MarketTypeName
 from pydantic import BeforeValidator
 
 
