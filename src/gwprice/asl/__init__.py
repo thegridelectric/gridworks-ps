@@ -1,4 +1,4 @@
-from meps.asl.codec import (
+from .codec import (
     AslCodec,
     AslError,
     AslType,
