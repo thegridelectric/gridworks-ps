@@ -7,7 +7,6 @@ import dotenv
 import requests
 from requests.auth import HTTPBasicAuth
 from gwprice.config import Settings
-from gwprice.asl.enums import MarketTypeName
 from gwprice.my_markets import MyMarkets
 from gwprice.my_p_nodes import MyPNodes
 from gwprice.asl.types.price import Price
