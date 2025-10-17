@@ -68,7 +68,7 @@ class PriceApi():
             hour_start_s = [int(x.timestamp()) for x in all_hours],
             lmp_list = lmp_prices,
             dist_list = dist_prices,
-            energy_list = [round(x+y,3) for x,y in zip(lmp_prices, dist_prices)]
+            energy_list = [x+y for x,y in zip(lmp_prices, dist_prices)]
         )
         return result
 
@@ -111,7 +111,7 @@ class PriceApi():
 
             unix_times = [next_hour.in_timezone(self.timezone_str).timestamp() + i*3600 for i in range(48)]
             dist_prices = [self.get_dist_price(x.hour, x.weekday()) for x in [pendulum.from_timestamp(x) for x in unix_times]]
-            energy_prices = [round(x+y, 2) for x, y in zip(lmp_prices, dist_prices)]
+            energy_prices = [x+y for x, y in zip(lmp_prices, dist_prices)]
 
             result = Gw0PriceForecast(
                 from_g_node_alias = from_alias.replace("-", "."),
@@ -143,7 +143,7 @@ class PriceApi():
                 unix_ms = int(now.timestamp()*1000),
                 lmp = current_lmp,
                 dist = current_dist,
-                energy = round(current_lmp + current_dist, 3)
+                energy = current_lmp + current_dist
             )
             return result
         except Exception as e:
