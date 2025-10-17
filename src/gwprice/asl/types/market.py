@@ -1,19 +1,17 @@
-"""Type market, version 000"""
-
 from typing import Literal
 
 from pydantic import model_validator
 from typing_extensions import Self
 
-from gwprice.enums import MarketCategory, MarketPriceUnit, MarketTypeName
-from gwprice.property_format import (
+from gwprice.asl.codec import AslType
+from gwprice.asl.enums import MarketCategory, MarketPriceUnit, MarketTypeName
+from gwprice.asl.property_format import (
     LeftRightDot,
     MarketName,
 )
-from gwprice.types.gw_base import GwBase
 
 
-class Market(GwBase):
+class Market(AslType):
     name: MarketName
     market_type_name: MarketTypeName
     p_node_alias: LeftRightDot

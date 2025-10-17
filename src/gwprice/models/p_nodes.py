@@ -27,11 +27,7 @@ class PNodeSql(Base):
         return self.alias
 
     def to_dict(self):
-        d = {
-            "Id": self.id,
-            "Alias": self.alias,
-            "Tz": self.tz
-        }
+        d = {"Id": self.id, "Alias": self.alias, "Tz": self.tz}
         if self.prev_alias:
             d["PrevAlias"] = self.prev_alias
 

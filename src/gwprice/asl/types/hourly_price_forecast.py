@@ -1,19 +1,18 @@
-"""Type hourly.price.forecast, version 000"""
 import uuid
 from typing import List, Literal, Optional
 
-from pydantic import field_validator, model_validator, Field
+from pydantic import Field, field_validator, model_validator
 from typing_extensions import Self
 
-from gwprice.property_format import (
+from gwprice.asl.codec import AslType
+from gwprice.asl.property_format import (
     LeftRightDot,
     UTCSeconds,
     UUID4Str,
 )
-from gwprice.types.gw_base import GwBase
 
 
-class HourlyPriceForecast(GwBase):
+class HourlyPriceForecast(AslType):
     from_g_node_alias: LeftRightDot
     channel_name: LeftRightDot
     start_unix_s: UTCSeconds

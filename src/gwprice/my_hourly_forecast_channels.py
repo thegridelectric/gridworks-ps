@@ -1,6 +1,6 @@
 from typing import Dict
 
-from gwprice.types.hourly_price_forecast_channel import HourlyPriceForecastChannel
+from gwprice.asl.types import HourlyPriceForecastChannel
 
 MyChannelDicts = [
     {

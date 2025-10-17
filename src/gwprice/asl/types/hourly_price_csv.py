@@ -1,5 +1,3 @@
-"""Type hourly.price.csv, version 000"""
-
 import csv
 from datetime import datetime, timezone
 from typing import List, Literal
@@ -8,17 +6,17 @@ import pendulum
 from pydantic import StrictInt, model_validator
 from typing_extensions import Self
 
-from gwprice.enums import MarketTypeName
-from gwprice.property_format import (
+from gwprice.asl.codec import AslType
+from gwprice.asl.enums import MarketTypeName
+from gwprice.asl.property_format import (
     LeftRightDot,
     MarketMinutes,
     MarketName,
     UUID4Str,
 )
-from gwprice.types.gw_base import GwBase
 
 
-class HourlyPriceCsv(GwBase):
+class HourlyPriceCsv(AslType):
     market_name: MarketName
     method_alias: LeftRightDot
     comment: str

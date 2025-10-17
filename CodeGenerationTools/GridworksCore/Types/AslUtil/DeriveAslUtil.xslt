@@ -29,8 +29,7 @@
 from typing import Dict
 from typing import List
 from typing import no_type_check
-
-from gwprice.types.gw_base import GwBase
+from gwprice.asl.codec import AslType
 </xsl:text>
 <xsl:for-each select="$airtable//ProtocolTypes/ProtocolType[(normalize-space(ProtocolName) ='gwprice')]">
 <xsl:sort select="VersionedTypeName" data-type="text"/>
@@ -38,7 +37,7 @@ from gwprice.types.gw_base import GwBase
 <xsl:for-each select="$airtable//VersionedTypes/VersionedType[(VersionedTypeId = $versioned-type-id)  and (Status = 'Active' or Status = 'Pending') and (ProtocolCategory = 'Json' or ProtocolCategory = 'GwAlgoSerial')]">
 
 <xsl:text>
-from gwprice.types.</xsl:text>
+from gwprice.asl.types.</xsl:text>
 <xsl:value-of select="translate(TypeName,'.','_')"/>
 <xsl:text> import </xsl:text>
 <xsl:call-template name="nt-case">
@@ -49,11 +48,11 @@ from gwprice.types.</xsl:text>
 <xsl:text>
 
 
-TypeByName: Dict[str, GwBase] = {}
+TypeByName: Dict[str, AslType] = {}
 
 
 @no_type_check
-def type_makers() -> List[GwBase]:
+def type_makers() -> List[AslType]:
     return [
         </xsl:text>
 <xsl:for-each select="$airtable//ProtocolTypes/ProtocolType[(normalize-space(ProtocolName) ='gwprice') and (normalize-space(VersionedTypeName)!='')]">

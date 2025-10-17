@@ -59,7 +59,7 @@ on these ideas:
 <xsl:for-each select="$airtable//ProtocolEnums/ProtocolEnum[(normalize-space(ProtocolName) ='gwprice') and not(normalize-space(EnumName)='')]">
 <xsl:sort select="LocalEnumName" data-type="text"/>
 <xsl:text>
-from gwprice.enums.</xsl:text>
+from gwprice.asl.enums.</xsl:text>
 <xsl:value-of select="translate(LocalEnumName,'.','_')"/>
 <xsl:text> import </xsl:text>
 <xsl:call-template name="nt-case">

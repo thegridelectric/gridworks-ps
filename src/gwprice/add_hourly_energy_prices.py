@@ -8,17 +8,19 @@ import requests
 from requests.auth import HTTPBasicAuth
 from sqlalchemy.orm import Session
 
+from gwprice.asl.enums import MarketTypeName
+from gwprice.asl.types import Price
 from gwprice.codec import pyd_to_sql
 from gwprice.config import Settings
 from gwprice.database import SessionLocal
-from gwprice.enums import MarketTypeName
 from gwprice.models.prices import bulk_insert_prices
 from gwprice.my_markets import MyMarkets
 from gwprice.my_p_nodes import MyPNodes
-from gwprice.type_helpers import Price
 
 
-def fetch_with_retry(url: str, auth: HTTPBasicAuth, retries: int = 3, delay: int = 5) -> Optional[str]:
+def fetch_with_retry(
+    url: str, auth: HTTPBasicAuth, retries: int = 3, delay: int = 5
+) -> Optional[str]:
     for attempt in range(retries):
         try:
             response = requests.get(url, auth=auth)
@@ -33,7 +35,7 @@ def fetch_with_retry(url: str, auth: HTTPBasicAuth, retries: int = 3, delay: int
 
 def add_hourly_prices_for_day(db: Session, market_name: str, date_str: str) -> bool:
     """
-    Returns False if it gets no prices 
+    Returns False if it gets no prices
     """
     market = next((market for market in MyMarkets if market.name == market_name), None)
     if market is None:

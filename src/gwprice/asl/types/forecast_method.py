@@ -1,13 +1,11 @@
-"""Type forecast.method, version 000"""
-
 from typing import Literal, Optional
 
-from gwprice.enums import MarketCategory
-from gwprice.property_format import LeftRightDot
-from gwprice.types.gw_base import GwBase
+from gwprice.asl.codec import AslType
+from gwprice.asl.enums import MarketCategory
+from gwprice.asl.property_format import LeftRightDot
 
 
-class ForecastMethod(GwBase):
+class ForecastMethod(AslType):
     alias: LeftRightDot
     category: Optional[MarketCategory] = None
     description: str

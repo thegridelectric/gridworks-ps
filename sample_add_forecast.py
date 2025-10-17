@@ -1,18 +1,22 @@
 import uuid
 
-from gwprice.database import SessionLocal
-
-db = SessionLocal()
 import pendulum
+from gwprice.asl.types import HourlyPriceForecast
 from gwprice.codec import pyd_to_sql, sql_to_pyd
+from gwprice.database import SessionLocal
 from gwprice.models import MarketSql, PriceSql  # Replace with your actual model
 from gwprice.my_hourly_forecast_channels import MyForecastChannels
-from gwprice.types import HourlyPriceForecast
 from sqlalchemy import func
 
+db = SessionLocal()
 channel_name = "maine.perfect.48"
 channel = next(
-    (channel for channel in MyForecastChannels.values() if channel.name == channel_name), None
+    (
+        channel
+        for channel in MyForecastChannels.values()
+        if channel.name == channel_name
+    ),
+    None,
 )
 
 db.query(func.min(PriceSql.slot_start_s)).filter(

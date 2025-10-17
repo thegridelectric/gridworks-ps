@@ -1,14 +1,16 @@
-import uvicorn
-from pydantic import BaseModel
+import csv
+import time
+from pathlib import Path
 from typing import List
+
+import httpx
+import pendulum
+import pytz
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pathlib import Path
-import csv
-import pytz
-import httpx
-import time
-import pendulum
+from pydantic import BaseModel
+
 
 class PriceUpdate(BaseModel):
     unix_s: List[float]
@@ -16,18 +18,18 @@ class PriceUpdate(BaseModel):
     dist: List[float]
 
 
-class PriceApi():
+class PriceApi:
     def __init__(self):
-        self.timezone_str = 'America/New_York'
+        self.timezone_str = "America/New_York"
         self.timezone = pytz.timezone(self.timezone_str)
-        self.timeout_seconds = 3*60
+        self.timeout_seconds = 3 * 60
 
     def start(self):
         self.app = FastAPI()
         self.app.add_middleware(
             CORSMiddleware,
             # TODO: allow_origins=["https://thegridelectric.github.io"]
-            allow_origins=["*"], 
+            allow_origins=["*"],
             allow_credentials=True,
             allow_methods=["*"],
         )
@@ -65,10 +67,10 @@ class PriceApi():
         lmp_usd_mwh = []
         try:
             if default:
-                file_path = Path(f"price_forecast.csv")
+                file_path = Path("price_forecast.csv")
             else:
-                file_path = Path(f"price_forecast_updated.csv")
-            with open(file_path, mode='r', newline='') as file:
+                file_path = Path("price_forecast_updated.csv")
+            with open(file_path, newline="") as file:
                 reader = csv.reader(file)
                 next(reader)
                 for row in reader:
@@ -80,36 +82,45 @@ class PriceApi():
                         continue
         except Exception as e:
             raise Exception(e)
-        
+
         current_time = time.time()
         start_index = None
         for i, unix in enumerate(unix_sec):
             if unix > current_time:
-                print(f"Starting at {pendulum.from_timestamp(unix, tz='America/New_York')}")
+                print(
+                    f"Starting at {pendulum.from_timestamp(unix, tz='America/New_York')}"
+                )
                 start_index = i
                 break
         end_index = start_index + 48
-        
+
         result = {
-            'unix_s': unix_sec[start_index:end_index],
-            'lmp': lmp_usd_mwh[start_index:end_index],
-            'dist': dist_usd_mwh[start_index:end_index],
-            'energy': [round(x + y, 2) for x, y in zip(lmp_usd_mwh[start_index:end_index], 
-                                                       dist_usd_mwh[start_index:end_index])]
+            "unix_s": unix_sec[start_index:end_index],
+            "lmp": lmp_usd_mwh[start_index:end_index],
+            "dist": dist_usd_mwh[start_index:end_index],
+            "energy": [
+                round(x + y, 2)
+                for x, y in zip(
+                    lmp_usd_mwh[start_index:end_index],
+                    dist_usd_mwh[start_index:end_index],
+                )
+            ],
         }
         return result
-    
+
     async def update_prices(self, prices: PriceUpdate):
         try:
             rows = []
             file_path = Path("price_forecast_updated.csv")
-            with open(file_path, mode='r', newline='') as file:
+            with open(file_path, newline="") as file:
                 reader = csv.reader(file)
                 header = next(reader)
                 rows = list(reader)
 
-            updated_prices = {float(timestamp): (lmp, dist) 
-                            for timestamp, lmp, dist in zip(prices.unix_s, prices.lmp, prices.dist)}
+            updated_prices = {
+                float(timestamp): (lmp, dist)
+                for timestamp, lmp, dist in zip(prices.unix_s, prices.lmp, prices.dist)
+            }
 
             # Update the rows based on the new prices
             for row in rows:
@@ -123,7 +134,7 @@ class PriceApi():
                     print(f"Error processing row {row}: {e}")
                     continue
 
-            with open(file_path, mode='w', newline='') as file:
+            with open(file_path, mode="w", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerow(header)
                 writer.writerows(rows)

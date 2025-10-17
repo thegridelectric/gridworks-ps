@@ -1,17 +1,15 @@
-"""Type get.hourly.price.forecast.channel, version 000"""
-
 from typing import Literal
 
 from pydantic import PositiveInt
 
-from gwprice.property_format import (
+from gwprice.asl.codec import AslType
+from gwprice.asl.property_format import (
     LeftRightDot,
     MarketName,
 )
-from gwprice.types.gw_base import GwBase
 
 
-class GetHourlyPriceForecastChannel(GwBase):
+class GetHourlyPriceForecastChannel(AslType):
     from_g_node_alias: LeftRightDot
     to_g_node_alias: LeftRightDot
     market_name: MarketName

@@ -1,6 +1,6 @@
 from typing import List
 
-from gwprice.types import ForecastMethod
+from gwprice.asl.types import ForecastMethod
 
 MyForecastMethodDicts = [
     {

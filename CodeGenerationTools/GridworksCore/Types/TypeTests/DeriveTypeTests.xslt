@@ -68,7 +68,7 @@
 <xsl:if test="count($airtable//TypeAttributes/TypeAttribute[(VersionedType = $versioned-type-id) and (EnumLocalName[text() = $base-name])])>0">
 
 <xsl:text>
-from gwprice.enums import </xsl:text>
+from gwprice.asl.enums import </xsl:text>
 <xsl:value-of select="$enum-local-name"/>
 
 </xsl:if>
@@ -78,13 +78,13 @@ from gwprice.enums import </xsl:text>
 <xsl:choose>
 <xsl:when test="(NotInInit='true')">
 <xsl:text>
-from gwprice.types.</xsl:text><xsl:value-of select="translate($type-name,'.','_')"/>
+from gwprice.named_types.</xsl:text><xsl:value-of select="translate($type-name,'.','_')"/>
 <xsl:text> import </xsl:text><xsl:value-of select="$class-name"/>
 </xsl:when>
 
 <xsl:otherwise>
 <xsl:text>
-from gwprice.types import </xsl:text><xsl:value-of select="$class-name"/>
+from gwprice.named_types import </xsl:text><xsl:value-of select="$class-name"/>
 </xsl:otherwise>
 
 </xsl:choose>

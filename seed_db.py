@@ -1,5 +1,7 @@
 import os
 
+from gwprice.asl.property_format import MarketMinutes
+from gwprice.asl.types import HourlyPriceCsv, Price
 from gwprice.codec import pyd_to_sql
 from gwprice.database import get_db
 from gwprice.models.forecast_methods import bulk_insert_forecast_methods
@@ -13,9 +15,6 @@ from gwprice.my_forecast_methods import MyForecastMethods
 from gwprice.my_hourly_forecast_channels import MyForecastChannels
 from gwprice.my_markets import MyMarkets
 from gwprice.my_p_nodes import MyPNodes
-from gwprice.property_format import MarketMinutes
-from gwprice.type_helpers.price import Price
-from gwprice.types import HourlyPriceCsv
 from sqlalchemy.orm import Session
 
 
@@ -25,7 +24,9 @@ def seed_database(db: Session, update_prices: bool = False):
         db, [pyd_to_sql(forecast) for forecast in MyForecastMethods]
     )
     bulk_insert_markets(db, [pyd_to_sql(market) for market in MyMarkets])
-    bulk_insert_channels(db, [pyd_to_sql(channel) for channel in MyForecastChannels.values()])
+    bulk_insert_channels(
+        db, [pyd_to_sql(channel) for channel in MyForecastChannels.values()]
+    )
 
     if update_prices:
         folder_path = "input_data/electricity_prices/isone"

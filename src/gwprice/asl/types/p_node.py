@@ -1,15 +1,13 @@
-"""Type p.node, version 000"""
-
 from typing import Literal, Optional
 
-from gwprice.property_format import (
+from gwprice.asl.codec import AslType
+from gwprice.asl.property_format import (
     LeftRightDot,
     UUID4Str,
 )
-from gwprice.types.gw_base import GwBase
 
 
-class PNode(GwBase):
+class PNode(AslType):
     id: UUID4Str
     alias: LeftRightDot
     iso_id: Optional[str] = None

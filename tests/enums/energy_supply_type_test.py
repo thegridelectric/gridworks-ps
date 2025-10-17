@@ -2,7 +2,7 @@
 Tests for enum energy.supply.type.000 from the GridWorks Type Registry.
 """
 
-from gwprice.enums import EnergySupplyType
+from gwprice.asl.enums import EnergySupplyType
 
 
 def test_energy_supply_type() -> None:

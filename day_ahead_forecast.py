@@ -1,26 +1,23 @@
+import csv
 import time
 import xml.etree.ElementTree as ET
-from datetime import datetime, timedelta
-from typing import Optional, List
-import pendulum
-import csv
+from datetime import datetime
+from typing import List, Optional
 
 import dotenv
+import pendulum
 import requests
-from requests.auth import HTTPBasicAuth
-from sqlalchemy.orm import Session
-
-from gwprice.codec import pyd_to_sql
+from gwprice.asl.types import Price
 from gwprice.config import Settings
-from gwprice.database import SessionLocal
-from gwprice.enums import MarketTypeName
+from gwprice.models import HourlyPriceForecastSql
 from gwprice.my_markets import MyMarkets
 from gwprice.my_p_nodes import MyPNodes
-from gwprice.type_helpers import Price
-from gwprice.models import HourlyPriceForecastSql
+from requests.auth import HTTPBasicAuth
 
 
-def fetch_with_retry(url: str, auth: HTTPBasicAuth, retries: int = 3, delay: int = 5) -> Optional[str]:
+def fetch_with_retry(
+    url: str, auth: HTTPBasicAuth, retries: int = 3, delay: int = 5
+) -> Optional[str]:
     for attempt in range(retries):
         try:
             response = requests.get(url, auth=auth)
@@ -34,10 +31,9 @@ def fetch_with_retry(url: str, auth: HTTPBasicAuth, retries: int = 3, delay: int
 
 
 def get_prices(market_name: str, date_str: str) -> List[Price]:
-
     market = [market for market in MyMarkets if market.name == market_name][0]
     p_node = [p_node for p_node in MyPNodes if p_node.alias == market.p_node_alias][0]
-    type = 'da' if 'da60' in market_name else 'rt'
+    type = "da" if "da60" in market_name else "rt"
 
     request_info = {
         "url": f"https://webservices.iso-ne.com/api/v1.1/hourlylmp/{type}/final/day/{date_str}/location/{p_node.iso_id}",
@@ -75,40 +71,50 @@ def get_prices(market_name: str, date_str: str) -> List[Price]:
                     )
                 )
         return prices
-        
 
-def get_48h_day_ahead_forecast(start_time:pendulum.DateTime)->HourlyPriceForecastSql:
 
-    if start_time.minute!=0 or start_time.second!=0:
+def get_48h_day_ahead_forecast(start_time: pendulum.DateTime) -> HourlyPriceForecastSql:
+    if start_time.minute != 0 or start_time.second != 0:
         raise ValueError("The start time must be rounded at the hour (0 min and 0 sec)")
 
     today = start_time.strftime("%Y%m%d")
     tomorrow = start_time.add(days=1).strftime("%Y%m%d")
-    forecast_today = get_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=today)
-    forecast_tomorrow = get_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=tomorrow)
+    forecast_today = get_prices(
+        market_name="e.da60.hw1.isone.ver.keene", date_str=today
+    )
+    forecast_tomorrow = get_prices(
+        market_name="e.da60.hw1.isone.ver.keene", date_str=tomorrow
+    )
 
     prices_today = [x.value for x in forecast_today]
     prices_tomorrow = [x.value for x in forecast_tomorrow]
 
     if start_time.hour <= 12:
-        prices = prices_today[start_time.hour:] + prices_today + prices_today[:start_time.hour]
+        prices = (
+            prices_today[start_time.hour :]
+            + prices_today
+            + prices_today[: start_time.hour]
+        )
     else:
-        prices = prices_today[start_time.hour:] + prices_tomorrow + prices_tomorrow[:start_time.hour]
+        prices = (
+            prices_today[start_time.hour :]
+            + prices_tomorrow
+            + prices_tomorrow[: start_time.hour]
+        )
 
     forecast = HourlyPriceForecastSql(
-        price_uid = 'x',
-        from_g_node_alias = "hw1.isone.ps",
-        channel_name = "keene.48",
-        start_unix_s = start_time.timestamp(),
-        hour_starting_prices = prices,
-        forecast_created_s = pendulum.now().timestamp()
-        )
+        price_uid="x",
+        from_g_node_alias="hw1.isone.ps",
+        channel_name="keene.48",
+        start_unix_s=start_time.timestamp(),
+        hour_starting_prices=prices,
+        forecast_created_s=pendulum.now().timestamp(),
+    )
 
     return forecast
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     import matplotlib.pyplot as plt
     # ORIGINAL USE
     # start_time = pendulum.datetime(2025,2,27,13,0,0)
@@ -117,31 +123,39 @@ if __name__ == '__main__':
     # plt.show()
     # END
 
-    start_time = pendulum.datetime(2023,9,30)
-    
+    start_time = pendulum.datetime(2023, 9, 30)
+
     all_da_prices, all_da_times = [], []
-    all_rt_prices, all_rt_times = [], [] 
+    all_rt_prices, all_rt_times = [], []
     while start_time < pendulum.datetime(2024, 4, 30):
-    # while start_time < pendulum.datetime(2023, 10, 30):
+        # while start_time < pendulum.datetime(2023, 10, 30):
         start_time = start_time.add(days=1)
         print(start_time)
-        da_prices = get_prices(market_name="e.da60.hw1.isone.ver.keene", date_str=start_time.strftime("%Y%m%d"))
+        da_prices = get_prices(
+            market_name="e.da60.hw1.isone.ver.keene",
+            date_str=start_time.strftime("%Y%m%d"),
+        )
         all_da_prices.extend([x.value for x in da_prices])
         all_da_times.extend([x.slot_start_s for x in da_prices])
-        rt_prices = get_prices(market_name="e.rt60gate5.hw1.isone.ver.keene", date_str=start_time.strftime("%Y%m%d"))
+        rt_prices = get_prices(
+            market_name="e.rt60gate5.hw1.isone.ver.keene",
+            date_str=start_time.strftime("%Y%m%d"),
+        )
         all_rt_prices.extend([x.value for x in rt_prices])
         all_rt_times.extend([x.slot_start_s for x in rt_prices])
         if all_da_times != all_rt_times:
             break
 
-    with open('winter_2023_2024_prices.csv', mode='w', newline='') as file:
+    with open("winter_2023_2024_prices.csv", mode="w", newline="") as file:
         writer = csv.writer(file)
-        writer.writerow(['time', 'dayahead', 'realtime'])
+        writer.writerow(["time", "dayahead", "realtime"])
         for item1, item2, item3 in zip(all_da_times, all_da_prices, all_rt_prices):
             writer.writerow([item1, item2, item3])
 
-    all_da_times = [pendulum.from_timestamp(x, tz='America/New_York') for x in all_rt_times]
-    plt.step(all_da_times, all_da_prices, where="post", label='Day ahead')
-    plt.step(all_da_times, all_rt_prices, where="post", label='Real time')
+    all_da_times = [
+        pendulum.from_timestamp(x, tz="America/New_York") for x in all_rt_times
+    ]
+    plt.step(all_da_times, all_da_prices, where="post", label="Day ahead")
+    plt.step(all_da_times, all_rt_prices, where="post", label="Real time")
     plt.legend()
     plt.show()

@@ -1,10 +1,9 @@
 import uuid
-from datetime import datetime, timezone
-from typing import Annotated, Dict
+from datetime import UTC, datetime
+from typing import Annotated
 
+from meps.asl.enums import MarketTypeName
 from pydantic import BeforeValidator
-
-from gwprice.asl.enums import MarketTypeName
 
 
 def check_is_ads1115_i2c_address(v: str) -> None:
@@ -114,9 +113,9 @@ def is_utc_milliseconds(v: int) -> int:
     UTCMilliseconds format: unix milliseconds between Jan 1 2000 and Jan 1 3000
     """
     if not isinstance(v, int):
-        raise ValueError("Not an int!")
-    start_date = datetime(2000, 1, 1, tzinfo=timezone.utc)
-    end_date = datetime(3000, 1, 1, tzinfo=timezone.utc)
+        raise TypeError("Not an int!")
+    start_date = datetime(2000, 1, 1, tzinfo=UTC)
+    end_date = datetime(3000, 1, 1, tzinfo=UTC)
 
     start_timestamp_ms = int(start_date.timestamp() * 1000)
     end_timestamp_ms = int(end_date.timestamp() * 1000)
@@ -134,8 +133,8 @@ def is_utc_seconds(v: int) -> int:
     """
     if not isinstance(v, int):
         raise ValueError("Not an int!")
-    start_date = datetime(2000, 1, 1, tzinfo=timezone.utc)
-    end_date = datetime(3000, 1, 1, tzinfo=timezone.utc)
+    start_date = datetime(2000, 1, 1, tzinfo=UTC)
+    end_date = datetime(3000, 1, 1, tzinfo=UTC)
 
     start_timestamp = int(start_date.timestamp())
     end_timestamp = int(end_date.timestamp())
@@ -250,10 +249,14 @@ def is_uuid4_str(v: str) -> str:
 def is_market_name(v: str) -> None:
     try:
         x = v.split(".")
-    except AttributeError:
-        raise ValueError(f"{v} failed to split on '.'")
+    except AttributeError as e:
+        raise ValueError(f"{v} failed to split on '.'") from e
     if len(x) < 3:
         raise ValueError("MarketNames need at least 3 words")
+    if x[0] not in {"e", "r", "d"}:
+        raise ValueError(
+            f"{v} first word must be e,r or d (energy, regulation, distribution)"
+        )
     if x[1] not in MarketTypeName.values():
         raise ValueError(f"{v} not recognized MarketType")
     g_node_alias = ".".join(x[2:])
@@ -261,7 +264,7 @@ def is_market_name(v: str) -> None:
     return v
 
 
-MarketMinutes: Dict[MarketTypeName, int] = {
+MarketMinutes: dict[MarketTypeName, int] = {
     MarketTypeName.da60: 60,
     MarketTypeName.rt15gate5: 15,
     MarketTypeName.rt30gate5: 30,
@@ -275,7 +278,8 @@ MarketMinutes: Dict[MarketTypeName, int] = {
 def is_market_slot_name(v: str) -> None:
     """
     MaketSlotNameLrdFormat: the format of a MarketSlotName.
-      - The first word must be a MarketTypeName
+      - First word must be e, r or d (energy, regulation, distribution)
+      - The second word must be a MarketTypeName
       - The last word (unix time of market slot start) must
       be a 10-digit integer divisible by 300 (i.e. all MarketSlots
       start at the top of 5 minutes)
@@ -284,20 +288,20 @@ def is_market_slot_name(v: str) -> None:
       for hourly markets)
       - The middle words have LeftRightDot format (GNodeAlias
       of the MarketMaker)
-    Example: rt60gate5.d1.isone.ver.keene.1673539200
+    Example: e.rt60gate5.d1.isone.ver.keene.1673539200
 
     """
     try:
         x = v.split(".")
-    except AttributeError:
-        raise ValueError(f"{v} failed to split on '.'")
+    except AttributeError as e:
+        raise ValueError(f"{v} failed to split on '.'") from e
     slot_start = x[-1]
     if len(slot_start) != 10:
         raise ValueError(f"slot start {slot_start} not of length 10")
     try:
         slot_start = int(slot_start)
-    except ValueError:
-        raise ValueError(f"slot start {slot_start} not an int")
+    except ValueError as e:
+        raise ValueError(f"slot start {slot_start} not an int") from e
     is_market_name(".".join(x[:-1]))
     market_type_name = x[1]
     market_duration_minutes = MarketMinutes[market_type_name]
