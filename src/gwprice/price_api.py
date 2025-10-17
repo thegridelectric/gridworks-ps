@@ -27,10 +27,18 @@ class PriceApi():
             allow_credentials=True,
             allow_methods=["*"],
         )
-        self.app.get("/get_forecast_prices/{from_alias}/{type_name}")(self.get_forecast_prices)
-        self.app.post("/get_real_time_price/{from_alias}/{type_name}")(self.get_real_time_price)
+        self.app.get("/{from_alias}/{type_name}")(self.process_request)
         self.app.post("/get_prices_visualizer/{from_alias}/{type_name}")(self.get_prices_visualizer)
         uvicorn.run(self.app, host="0.0.0.0", port=8000)
+
+    async def process_request(self, from_alias: str, type_name: str) -> Gw0PriceForecast | Gw0RealtimePrice:
+        if type_name == "gw0-price-forecast":
+            return await self.get_forecast_prices(from_alias, type_name)
+        elif type_name == "gw0-realtime-price":
+            return await self.get_real_time_price(from_alias, type_name)
+        else:
+            print(f"Error: type_name {type_name} is not supported")
+            return
 
     async def get_prices_visualizer(self, from_alias: str, type_name: str, request: PriceRequest) -> Gw0PriceForecast:
         if from_alias != "hw1-isone-me-versant-keene-ps":
