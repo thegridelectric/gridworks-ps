@@ -7,9 +7,7 @@ import dotenv
 import requests
 from requests.auth import HTTPBasicAuth
 from sqlalchemy.orm import Session
-from gwprice.asl.codec import pyd_to_sql
 from gwprice.config import Settings
-from gwprice.database import SessionLocal
 from gwprice.enums import MarketTypeName
 from gwprice.my_markets import MyMarkets
 from gwprice.my_p_nodes import MyPNodes
