@@ -64,8 +64,8 @@ class PriceApi():
         dist_prices = [self.get_dist_price(x.hour, x.weekday()) for x in all_hours]
 
         result = Gw0PriceForecast(
-            from_g_node_alias = from_alias,
-            hour_start_s = int(all_hours[0].timestamp()),
+            from_g_node_alias = from_alias.replace("-", "."),
+            hour_start_s = [int(x.timestamp()) for x in all_hours],
             lmp_list = lmp_prices,
             dist_list = dist_prices,
             energy_list = [round(x+y,3) for x,y in zip(lmp_prices, dist_prices)]
@@ -114,8 +114,8 @@ class PriceApi():
             energy_prices = [round(x+y, 2) for x, y in zip(lmp_prices, dist_prices)]
 
             result = Gw0PriceForecast(
-                from_g_node_alias = from_alias,
-                hour_start_s = int(unix_times[0]),
+                from_g_node_alias = from_alias.replace("-", "."),
+                hour_start_s = [int(x) for x in unix_times],
                 lmp_list = lmp_prices,
                 dist_list = dist_prices,
                 energy_list = energy_prices
@@ -139,7 +139,7 @@ class PriceApi():
             current_lmp = get_current_lmp(market_name="e.rt60gate5.hw1.isone.ver.keene")
             current_dist = self.get_dist_price(now.hour, now.weekday())
             result = Gw0RealtimePrice(
-                from_g_node_alias = from_alias,
+                from_g_node_alias = from_alias.replace("-", "."),
                 unix_ms = int(now.timestamp()*1000),
                 lmp = current_lmp,
                 dist = current_dist,
