@@ -7,9 +7,10 @@ import dotenv
 import requests
 from requests.auth import HTTPBasicAuth
 from gwprice.config import Settings
+from gwprice.asl.enums import MarketTypeName
 from gwprice.my_markets import MyMarkets
 from gwprice.my_p_nodes import MyPNodes
-from gwprice.type_helpers import Price
+from gwprice.asl.types.price import Price
 from gwprice.models import HourlyPriceForecastSql
 
 def fetch_with_retry(url: str, auth: HTTPBasicAuth, retries: int = 3, delay: int = 5) -> Optional[str]:
