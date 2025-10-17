@@ -6,9 +6,7 @@ import pendulum
 import dotenv
 import requests
 from requests.auth import HTTPBasicAuth
-from sqlalchemy.orm import Session
 from gwprice.config import Settings
-from gwprice.enums import MarketTypeName
 from gwprice.my_markets import MyMarkets
 from gwprice.my_p_nodes import MyPNodes
 from gwprice.type_helpers import Price
