@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import pendulum
 from pydantic import BaseModel
 from gwprice.get_prices_from_isone_api import get_current_lmp, get_hourly_lmp
+from gwprice.asl.types.gw0_price_forecast import Gw0PriceForecast
+from gwprice.asl.types.gw0_realtime_price import Gw0RealtimePrice
 
 
 class PriceRequest(BaseModel):
@@ -25,12 +27,18 @@ class PriceApi():
             allow_credentials=True,
             allow_methods=["*"],
         )
-        self.app.post("/get_forecast_prices")(self.get_forecast_prices)
-        self.app.post("/get_real_time_price")(self.get_real_time_price)
-        self.app.post("/get_prices_visualizer")(self.get_prices_visualizer)
+        self.app.get("/get_forecast_prices/{from_alias}/{type_name}")(self.get_forecast_prices)
+        self.app.post("/get_real_time_price/{from_alias}/{type_name}")(self.get_real_time_price)
+        self.app.post("/get_prices_visualizer/{from_alias}/{type_name}")(self.get_prices_visualizer)
         uvicorn.run(self.app, host="0.0.0.0", port=8000)
 
-    async def get_prices_visualizer(self, request: PriceRequest):
+    async def get_prices_visualizer(self, from_alias: str, type_name: str, request: PriceRequest) -> Gw0PriceForecast:
+        if from_alias != "hw1-isone-me-versant-keene-ps":
+            print(f"Error: from_alias {from_alias} is not supported")
+            return
+        if type_name != "gw0-price-forecast":
+            print(f"Error: type_name {type_name} is not supported")
+            return
         start_time = pendulum.from_timestamp(request.start_unix_s, tz=request.timezone_str)
         end_time = pendulum.from_timestamp(request.end_unix_s, tz=request.timezone_str)
         num_days = (end_time.date() - start_time.date()).days
@@ -54,10 +62,24 @@ class PriceApi():
         
         all_hours = [start_time.add(hours=i) for i in range(len(lmp_prices))]
         dist_prices = [self.get_dist_price(x.hour, x.weekday()) for x in all_hours]
-        return {'lmp': lmp_prices, 'dist': dist_prices}
 
-    async def get_forecast_prices(self):
-        '''Get the forecast prices for the next 48 hours'''
+        result = Gw0PriceForecast(
+            from_g_node_alias = from_alias,
+            hour_start_s = int(all_hours[0].timestamp()),
+            lmp_list = lmp_prices,
+            dist_list = dist_prices,
+            energy_list = [round(x+y,3) for x,y in zip(lmp_prices, dist_prices)]
+        )
+        return result
+
+    async def get_forecast_prices(self, from_alias: str, type_name: str) -> Gw0PriceForecast:
+        '''Get the forecast prices for the next 48 hours for the specified domain'''
+        if from_alias != "hw1-isone-me-versant-keene-ps":
+            print(f"Error: from_alias {from_alias} is not supported")
+            return
+        if type_name != "gw0-price-forecast":
+            print(f"Error: type_name {type_name} is not supported")
+            return
         try:
             next_hour = pendulum.now(tz=self.timezone_str).add(hours=1).replace(minute=0, second=0, microsecond=0)
             
@@ -90,30 +112,39 @@ class PriceApi():
             unix_times = [next_hour.in_timezone(self.timezone_str).timestamp() + i*3600 for i in range(48)]
             dist_prices = [self.get_dist_price(x.hour, x.weekday()) for x in [pendulum.from_timestamp(x) for x in unix_times]]
             energy_prices = [round(x+y, 2) for x, y in zip(lmp_prices, dist_prices)]
-            result = {
-                'unix_s': unix_times,
-                'lmp': lmp_prices,
-                'dist': dist_prices,
-                'energy': energy_prices
-            }
+
+            result = Gw0PriceForecast(
+                from_g_node_alias = from_alias,
+                hour_start_s = int(unix_times[0]),
+                lmp_list = lmp_prices,
+                dist_list = dist_prices,
+                energy_list = energy_prices
+            )
             return result
 
         except Exception as e:
             print(f"Error getting price forecasts: {e}")
             return None
 
-    async def get_real_time_price(self):
+    async def get_real_time_price(self, from_alias: str, type_name: str) -> Gw0RealtimePrice:
         '''Get the real time price for the current 5 minute interval'''
+        if from_alias != "hw1-isone-me-versant-keene-ps":
+            print(f"Error: from_alias {from_alias} is not supported")
+            return
+        if type_name != "gw0-realtime-price":
+            print(f"Error: type_name {type_name} is not supported")
+            return
         now = pendulum.now(tz=self.timezone_str)
         try:
             current_lmp = get_current_lmp(market_name="e.rt60gate5.hw1.isone.ver.keene")
             current_dist = self.get_dist_price(now.hour, now.weekday())
-            result = {
-                'unix_s': now.timestamp(),
-                'lmp': current_lmp,
-                'dist': current_dist,
-                'energy': round(current_lmp + current_dist, 2)
-            }
+            result = Gw0RealtimePrice(
+                from_g_node_alias = from_alias,
+                unix_ms = int(now.timestamp()*1000),
+                lmp = current_lmp,
+                dist = current_dist,
+                energy = round(current_lmp + current_dist, 3)
+            )
             return result
         except Exception as e:
             print(f"Error getting real time price: {e}")
