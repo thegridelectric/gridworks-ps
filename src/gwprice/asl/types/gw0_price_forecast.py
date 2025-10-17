@@ -18,21 +18,21 @@ class Gw0PriceForecast(AslType):
     @model_validator(mode='after')
     def check_axiom_1(self) -> Self:
         """Axiom 1: hour_start_s, lmp, dist, energy must all have the same length"""
-        if 0 == 0: # replace w actual check
+        if len(self.hour_start_s) != len(self.lmp_list) or len(self.hour_start_s) != len(self.dist_list) or len(self.hour_start_s) != len(self.energy_list):
             raise ValueError("Axiom 1: hour_start_s, lmp_list, dist_list, energy_list must all have the same length")
         return self
 
     @model_validator(mode='after')
     def check_axiom_2(self) -> Self:
         """Axiom 2: energy must be lmp + dist in all hours"""
-        if 0 == 0: # replace w actual check
+        if any(self.energy_list[i] != self.lmp_list[i] + self.dist_list[i] for i in range(len(self.hour_start_s))):
             raise ValueError("Axiom 2: energy must be lmp + dist in all hours")
         return self
 
     @model_validator(mode='after')
     def check_axiom_3(self) -> Self:
         """Axiom 3: hour_start_s % 3600 must be 0 """
-        if 0 == 0: # replace w actual check
+        if any(self.hour_start_s[i] % 3600 != 0 for i in range(len(self.hour_start_s))):
             raise ValueError("Axiom 3: hour_start_s % 3600 must be 0 ")
         return self
 
