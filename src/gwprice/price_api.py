@@ -159,7 +159,6 @@ class PriceApi():
             return None
 
     def get_dist_price(self, hour: int, weekday: int):
-        print(f"Getting dist price for hour {hour} and weekday {weekday}")
         return (
             487.63 if hour in [7,8,9,10,11,16,17,18,19] and weekday<5 
             else 54.98 if hour in [12,13,14,15] and weekday<5
