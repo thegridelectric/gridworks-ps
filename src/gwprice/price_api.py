@@ -118,7 +118,7 @@ class PriceApi():
                 lmp_prices = prices_today[next_hour.hour:] + prices_tomorrow + prices_tomorrow[:next_hour.hour]
 
             unix_times = [next_hour.in_timezone(self.timezone_str).timestamp() + i*3600 for i in range(48)]
-            dist_prices = [self.get_dist_price(x.hour, x.weekday()) for x in [pendulum.from_timestamp(x) for x in unix_times]]
+            dist_prices = [self.get_dist_price(x.hour, x.weekday()) for x in [pendulum.from_timestamp(x, tz=self.timezone_str) for x in unix_times]]
             energy_prices = [x+y for x, y in zip(lmp_prices, dist_prices)]
 
             result = Gw0PriceForecast(
@@ -159,6 +159,7 @@ class PriceApi():
             return None
 
     def get_dist_price(self, hour: int, weekday: int):
+        print(f"Getting dist price for hour {hour} and weekday {weekday}")
         return (
             487.63 if hour in [7,8,9,10,11,16,17,18,19] and weekday<5 
             else 54.98 if hour in [12,13,14,15] and weekday<5
