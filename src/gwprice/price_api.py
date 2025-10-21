@@ -27,7 +27,7 @@ class PriceApi():
             allow_credentials=True,
             allow_methods=["*"],
         )
-        self.app.get("/get_prices/{from_alias}/{type_name}")(self.process_request)
+        self.app.get("/{from_alias}/{type_name}")(self.process_request)
         self.app.post("/get_prices_visualizer/{from_alias}/{type_name}")(self.get_prices_visualizer)
         uvicorn.run(self.app, host="0.0.0.0", port=8000)
 
