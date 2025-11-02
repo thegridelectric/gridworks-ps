@@ -119,12 +119,12 @@ class PriceApi():
 
             unix_times = [next_hour.in_timezone(self.timezone_str).timestamp() + i*3600 for i in range(48)]
             dist_prices = [self.get_dist_price(x.hour, x.weekday()) for x in [pendulum.from_timestamp(x, tz=self.timezone_str) for x in unix_times]]
-            energy_prices = [x+y for x, y in zip(lmp_prices, dist_prices)]
+            energy_prices = [round(x+y,3) for x, y in zip(lmp_prices, dist_prices)]
 
             result = Gw0PriceForecast(
                 from_g_node_alias = from_alias.replace("-", "."),
                 hour_start_s = [int(x) for x in unix_times],
-                lmp_list = lmp_prices,
+                lmp_list = lmp_prices[:48],
                 dist_list = dist_prices,
                 energy_list = energy_prices
             )
