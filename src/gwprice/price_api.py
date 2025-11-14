@@ -73,8 +73,8 @@ class PriceApi():
         timestamps = [int(x.timestamp()) for x in all_hours]
 
         if (
-            start_time >= pendulum.datetime(2025, 11, 14, 12, tz=self.timezone_str)
-            and start_time < pendulum.datetime(2025, 11, 17, 12, tz=self.timezone_str)
+            min(all_hours) >= pendulum.datetime(2025, 11, 14, 12, tz=self.timezone_str)
+            and max(all_hours) < pendulum.datetime(2025, 11, 17, 12, tz=self.timezone_str)
         ):
             print("HACK: Using trial prices for the weekend")
             df = pd.read_csv("data/trial_stetson_prices/stetson_sequence1.csv")
