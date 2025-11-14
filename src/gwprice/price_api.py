@@ -118,14 +118,14 @@ class PriceApi():
                 next_hour < pendulum.datetime(2025, 11, 17, 12, tz=self.timezone_str)
             ):
                 hack = True
-                df = pd.read_csv("stetson_sequence1.csv")
+                df = pd.read_csv("data/trial_stetson_prices/stetson_sequence1.csv")
                 df_today = df[df['day'] == next_hour.day]
                 df_tomorrow = df[df['day'] == next_hour.day + 1]
                 if not df_today.empty:
                     prices_today_hack = list(df_today['lmp'])
                 if not df_tomorrow.empty:
                     prices_tomorrow_hack = list(df_tomorrow['lmp'])
-                    
+
                 # Friday
                 if next_hour.day == 14:
                     if len(prices_today_hack) == 12 and prices_today:
