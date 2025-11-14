@@ -83,14 +83,7 @@ class PriceApi():
             timestamp_stetson = list(df['timestamp'])
             for i, t in enumerate(timestamps):
                 if t in timestamp_stetson:
-                    print(f"HACK: Using trial price for {all_hours[i]}, was {lmp_prices[i]}, is now {lmp_stetson[timestamp_stetson.index(t)]}")
                     lmp_prices[i] = lmp_stetson[timestamp_stetson.index(t)]
-                else:
-                    print(f"HACK: No trial price found for timestamp {t} for {all_hours[i]}")
-        else:
-            print("Not using trial prices for the weekend")
-            print(f"Min hour: {min(all_hours)}")
-            print(f"Max hour: {max(all_hours)}")
 
         result = Gw0PriceForecast(
             from_g_node_alias = from_alias.replace("-", "."),
