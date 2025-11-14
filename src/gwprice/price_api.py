@@ -70,10 +70,24 @@ class PriceApi():
         
         all_hours = [start_time.add(hours=i) for i in range(len(lmp_prices))]
         dist_prices = [self.get_dist_price(x.hour, x.weekday()) for x in all_hours]
+        timestamps = [int(x.timestamp()) for x in all_hours]
+
+        if (
+            start_time >= pendulum.datetime(2025, 11, 14, 12, tz=self.timezone_str)
+            and start_time < pendulum.datetime(2025, 11, 17, 12, tz=self.timezone_str)
+        ):
+            print("HACK: Using trial prices for the weekend")
+            df = pd.read_csv("data/trial_stetson_prices/stetson_sequence1.csv")
+            lmp_stetson = list(df['lmp'])
+            timestamp_stetson = list(df['timestamp'])
+            for i, t in enumerate(timestamps):
+                if t in timestamp_stetson:
+                    print(f"HACK: Using trial price for {all_hours[i]}, was {lmp_prices[i]}, is now {lmp_stetson[timestamp_stetson.index(t)]}")
+                    lmp_prices[i] = lmp_stetson[timestamp_stetson.index(t)]
 
         result = Gw0PriceForecast(
             from_g_node_alias = from_alias.replace("-", "."),
-            hour_start_s = [int(x.timestamp()) for x in all_hours],
+            hour_start_s = timestamps,
             lmp_list = lmp_prices,
             dist_list = dist_prices,
             energy_list = [x+y for x,y in zip(lmp_prices, dist_prices)]

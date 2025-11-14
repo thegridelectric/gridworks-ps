@@ -10,23 +10,12 @@ import pytz
 from gwprice.asl.types.gw0_price_forecast import Gw0PriceForecast
 from gwprice.asl.types.gw0_realtime_price import Gw0RealtimePrice
 
-
-running_locally = False
+running_locally = True
 
 if running_locally:
-    response = requests.get("http://0.0.0.0:8000/hw1-isone-me-versant-keene-ps/gw0-realtime-price")
+    HOST = "http://0.0.0.0:8000"
 else:
-    response = requests.get("https://price-service.electricity.works/hw1-isone-me-versant-keene-ps/gw0-realtime-price")
-
-if response.status_code == 200:
-    data = response.json()
-    print("✅ API call successful!")
-    print(f"Received:\n {data}")
-else:
-    print(f"❌ API call failed: {response.status_code}")
-    print(response.text)
-
-
+    HOST = "https://price-service.electricity.works"
 
 
 # Additional
@@ -46,7 +35,7 @@ class PriceForecast(BaseModel):
 async def get_real_time_price() -> float:
     '''Returns current 5min real-time price (LMP+Dist) in USD/MWh'''
     try:
-        url = "https://price-service.electricity.works/hw1-isone-me-versant-keene-ps/gw0-realtime-price"
+        url = f"{HOST}/hw1-isone-me-versant-keene-ps/gw0-realtime-price"
         async with httpx.AsyncClient() as client:
             response = await client.get(url)
             if response.status_code == 200:
@@ -71,7 +60,7 @@ async def get_price_forecast_48h(data_dir: str = "./data") -> PriceForecast:
     '''Gets price forecast for the next 48 hours. All in USD/MWh'''
     try:
         # Get price forecast from the price service API
-        url = "https://price-service.electricity.works/hw1-isone-me-versant-keene-ps/gw0-price-forecast"
+        url = f"{HOST}/hw1-isone-me-versant-keene-ps/gw0-price-forecast"
         async with httpx.AsyncClient() as client:
             response = await client.get(url)
             if response.status_code == 200:
@@ -263,9 +252,9 @@ async def main():
     print(f"📁 Working directory: {Path.cwd()}")
         
     # Test the async functions
-    real_time_price = await test_get_real_time_price()
+    # real_time_price = await test_get_real_time_price()
     forecast = await test_get_price_forecast_48h()
-    forecasted_price = await test_read_forecasted_price_for_now()
+    # forecasted_price = await test_read_forecasted_price_for_now()
     
     # Summary
     print("\n" + "=" * 50)
@@ -273,9 +262,9 @@ async def main():
     print("=" * 50)
     
     tests = [
-        ("Real-time Price", real_time_price is not None and real_time_price > 0),
+        # ("Real-time Price", real_time_price is not None and real_time_price > 0),
         ("48h Price Forecast", forecast is not None),
-        ("Current Hour Forecast", forecasted_price is not None)
+        # ("Current Hour Forecast", forecasted_price is not None)
     ]
     
     passed = sum(1 for _, success in tests if success)
