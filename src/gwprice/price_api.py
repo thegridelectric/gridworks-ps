@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from gwprice.get_prices_from_isone_api import get_current_lmp, get_hourly_lmp
 from gwprice.asl.types.gw0_price_forecast import Gw0PriceForecast
 from gwprice.asl.types.gw0_realtime_price import Gw0RealtimePrice
-
+import pandas as pd
 
 class PriceRequest(BaseModel):
     '''Request for the prices for the visualizer'''
@@ -111,8 +111,46 @@ class PriceApi():
             except Exception as e:
                 prices_tomorrow = []
 
+            # Hack to test new prices for the weekend
+            hack = False
+            if (
+                next_hour >= pendulum.datetime(2025, 11, 14, 12, tz=self.timezone_str) and
+                next_hour < pendulum.datetime(2025, 11, 17, 12, tz=self.timezone_str)
+            ):
+                hack = True
+                df = pd.read_csv("stetson_sequence1.csv")
+                df_today = df[df['day'] == next_hour.day]
+                df_tomorrow = df[df['day'] == next_hour.day + 1]
+                if not df_today.empty:
+                    prices_today_hack = list(df_today['lmp'])
+                if not df_tomorrow.empty:
+                    prices_tomorrow_hack = list(df_tomorrow['lmp'])
+                    
+                # Friday
+                if next_hour.day == 14:
+                    if len(prices_today_hack) == 12 and prices_today:
+                        prices_today = prices_today[:12] + prices_today_hack
+                    if len(prices_tomorrow_hack) == 24:
+                        prices_tomorrow = prices_tomorrow_hack
+                # Satuday
+                if next_hour.day == 15:
+                    if len(prices_today_hack) == 24:
+                        prices_today = prices_today_hack
+                    if len(prices_tomorrow_hack) == 24:
+                        prices_tomorrow = prices_tomorrow_hack
+                # Sunday
+                if next_hour.day == 16:
+                    if len(prices_today_hack) == 24:
+                        prices_today = prices_today_hack
+                    if len(prices_tomorrow_hack) == 12 and prices_tomorrow:
+                        prices_tomorrow = prices_tomorrow_hack + prices_tomorrow[12:]
+                # Monday
+                if next_hour.day == 17:
+                    if len(prices_today_hack) == 12 and prices_today:
+                        prices_today = prices_today_hack + prices_today[12:]
+
             # Combine the prices to construct a 48-hour forecast starting from the next hour
-            if next_hour.hour <= 12 or not prices_tomorrow:
+            if (not hack and next_hour.hour <= 12) or not prices_tomorrow:
                 lmp_prices = prices_today[next_hour.hour:] + prices_today + prices_today[:next_hour.hour]
             else:
                 lmp_prices = prices_today[next_hour.hour:] + prices_tomorrow + prices_tomorrow[:next_hour.hour]
