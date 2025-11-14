@@ -28,6 +28,7 @@ deepdiff = "^8.0.1"
 pendulum = "^3.0.0"
 fastapi = "^0.115.0"
 httpx = "^0.28.1"
+pandas = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 Pygments = ">=2.10.0"
