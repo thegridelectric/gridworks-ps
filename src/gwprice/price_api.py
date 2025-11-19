@@ -76,13 +76,15 @@ class PriceApi():
         if (
             max(all_hours) >= pendulum.datetime(2025, 11, 14, 12, tz=self.timezone_str)
             and min(all_hours) < pendulum.datetime(2025, 11, 17, 12, tz=self.timezone_str)
+        ) or (
+            max(all_hours) >= pendulum.datetime(2025, 11, 21, 12, tz=self.timezone_str)
+            and min(all_hours) < pendulum.datetime(2025, 11, 24, 12, tz=self.timezone_str)
         ):
-            print("HACK: Using trial prices for the weekend")
             df = pd.read_csv("data/trial_stetson_prices/stetson_sequence1.csv")
             lmp_stetson = list(df['lmp'])
             timestamp_stetson = list(df['timestamp'])
             for i, t in enumerate(timestamps):
-                if t in timestamp_stetson:
+                if t in timestamp_stetson or t+7*24*3600 in timestamp_stetson:
                     lmp_prices[i] = lmp_stetson[timestamp_stetson.index(t)]
 
         result = Gw0PriceForecast(
