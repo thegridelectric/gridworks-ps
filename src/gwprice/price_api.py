@@ -84,8 +84,11 @@ class PriceApi():
             lmp_stetson = list(df['lmp'])
             timestamp_stetson = list(df['timestamp'])
             for i, t in enumerate(timestamps):
-                if t in timestamp_stetson or t+7*24*3600 in timestamp_stetson:
-                    lmp_prices[i] = lmp_stetson[timestamp_stetson.index(t)]
+                if t in timestamp_stetson or t-7*24*3600 in timestamp_stetson:
+                    if t in timestamp_stetson:
+                        lmp_prices[i] = lmp_stetson[timestamp_stetson.index(t)]
+                    else:
+                        lmp_prices[i] = lmp_stetson[timestamp_stetson.index(t-7*24*3600)]
 
         result = Gw0PriceForecast(
             from_g_node_alias = from_alias.replace("-", "."),
