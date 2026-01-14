@@ -177,7 +177,9 @@ class PriceApi():
             else:
                 lmp_prices = prices_today[next_hour.hour:] + prices_tomorrow + prices_tomorrow[:next_hour.hour]
 
-            unix_times = [next_hour.in_timezone(self.timezone_str).timestamp() + i*3600 for i in range(48)]
+            # Extend to 96 hours with just the distribution prices
+            lmp_prices = lmp_prices + [lmp_prices[-1]] * 48
+            unix_times = [next_hour.in_timezone(self.timezone_str).timestamp() + i*3600 for i in range(96)]
             dist_prices = [self.get_dist_price(x.hour, x.weekday()) for x in [pendulum.from_timestamp(x, tz=self.timezone_str) for x in unix_times]]
             energy_prices = [x+y for x, y in zip(lmp_prices, dist_prices)]
 
