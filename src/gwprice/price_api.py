@@ -171,14 +171,13 @@ class PriceApi():
                     if len(prices_today_hack) == 12 and prices_today:
                         prices_today = prices_today_hack + prices_today[12:]
 
-            # Combine the prices to construct a 48-hour forecast starting from the next hour
+            # Combine the prices to construct a 96-hour forecast starting from the next hour
             if (not hack and next_hour.hour <= 12) or not prices_tomorrow:
-                lmp_prices = prices_today[next_hour.hour:] + prices_today + prices_today[:next_hour.hour]
+                lmp_prices = prices_today[next_hour.hour:] + prices_today*3 + prices_today[:next_hour.hour]
             else:
-                lmp_prices = prices_today[next_hour.hour:] + prices_tomorrow + prices_tomorrow[:next_hour.hour]
+                lmp_prices = prices_today[next_hour.hour:] + prices_tomorrow*3 + prices_tomorrow[:next_hour.hour]
 
             # Extend to 96 hours with just the distribution prices
-            lmp_prices = lmp_prices + [0] * 48
             lmp_prices = lmp_prices[:96]
             unix_times = [next_hour.in_timezone(self.timezone_str).timestamp() + i*3600 for i in range(96)]
             dist_prices = [self.get_dist_price(x.hour, x.weekday()) for x in [pendulum.from_timestamp(x, tz=self.timezone_str) for x in unix_times]]
