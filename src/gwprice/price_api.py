@@ -23,6 +23,7 @@ class PriceApi():
     def __init__(self):
         self.timezone_str = 'America/New_York'
         self.visualizer_cache_dir = Path("data/isone_hourly_cache")
+        self._last_cache_cleanup_day = None
 
     def _day_is_cacheable(self, day_time: pendulum.DateTime) -> bool:
         cache_min_day = pendulum.now(tz=self.timezone_str).subtract(days=3).date()
@@ -68,6 +69,14 @@ class PriceApi():
             except Exception:
                 continue
 
+    def _cleanup_old_day_cache_once_per_day(self) -> bool:
+        today = pendulum.now(tz=self.timezone_str).date()
+        if self._last_cache_cleanup_day == today:
+            return False
+        self._cleanup_old_day_cache()
+        self._last_cache_cleanup_day = today
+        return True
+
     def start(self):
         self.app = FastAPI()
         self.app.add_middleware(
@@ -101,7 +110,7 @@ class PriceApi():
         start_time = pendulum.from_timestamp(request.start_unix_s, tz=request.timezone_str)
         end_time = pendulum.from_timestamp(request.end_unix_s, tz=request.timezone_str)
         num_days = (end_time.date() - start_time.date()).days
-        print(f"[get_prices_visualizer] request parse: {(time.perf_counter() - t0) * 1000:.1f} ms")
+        print(f"[get_prices_visualizer][MAIN] request_parse: {(time.perf_counter() - t0) * 1000:.1f} ms")
 
         t1 = time.perf_counter()
         lmp_prices = []
@@ -128,24 +137,24 @@ class PriceApi():
                 self._write_cached_day_prices(day_time, prices_day)
                 cache_write_ms = (time.perf_counter() - cache_write_start) * 1000
                 print(
-                    f"[get_prices_visualizer] day {day_key}: cache_miss "
-                    f"(read={cache_read_ms:.1f} ms, fetch={fetch_ms:.1f} ms, write={cache_write_ms:.1f} ms)"
+                    f"[get_prices_visualizer][SUB][day {day_key}] cache_miss: "
+                    f"read={cache_read_ms:.1f} ms, fetch={fetch_ms:.1f} ms, write={cache_write_ms:.1f} ms"
                 )
             else:
-                print(f"[get_prices_visualizer] day {day_key}: cache_hit (read={cache_read_ms:.1f} ms)")
+                print(f"[get_prices_visualizer][SUB][day {day_key}] cache_hit: read={cache_read_ms:.1f} ms")
             if day==0:
                 prices_day = prices_day[start_time.hour:]
             if day==num_days:
                 prices_day = prices_day[:end_time.hour]
             lmp_prices.extend(prices_day)
-            print(f"[get_prices_visualizer] day {day_key}: total {(time.perf_counter() - day_start) * 1000:.1f} ms")
-        print(f"[get_prices_visualizer] all day prices: {(time.perf_counter() - t1) * 1000:.1f} ms")
+            print(f"[get_prices_visualizer][SUB][day {day_key}] total: {(time.perf_counter() - day_start) * 1000:.1f} ms")
+        print(f"[get_prices_visualizer][MAIN] collect_day_prices: {(time.perf_counter() - t1) * 1000:.1f} ms")
         
         t2 = time.perf_counter()
         all_hours = [start_time.add(hours=i) for i in range(len(lmp_prices))]
         dist_prices = [self.get_dist_price(x.hour, x.weekday()) for x in all_hours]
         timestamps = [int(x.timestamp()) for x in all_hours]
-        print(f"[get_prices_visualizer] build timestamps/dist: {(time.perf_counter() - t2) * 1000:.1f} ms")
+        print(f"[get_prices_visualizer][MAIN] build_timestamps_and_dist: {(time.perf_counter() - t2) * 1000:.1f} ms")
 
         t3 = time.perf_counter()
         if (
@@ -164,7 +173,7 @@ class PriceApi():
                         lmp_prices[i] = lmp_stetson[timestamp_stetson.index(t)]
                     else:
                         lmp_prices[i] = lmp_stetson[timestamp_stetson.index(t-7*24*3600)]
-        print(f"[get_prices_visualizer] special stetson override: {(time.perf_counter() - t3) * 1000:.1f} ms")
+        print(f"[get_prices_visualizer][MAIN] apply_stetson_override: {(time.perf_counter() - t3) * 1000:.1f} ms")
 
         t4 = time.perf_counter()
         result = Gw0PriceForecast(
@@ -174,12 +183,16 @@ class PriceApi():
             dist_list = dist_prices,
             energy_list = [x+y for x,y in zip(lmp_prices, dist_prices)]
         )
-        print(f"[get_prices_visualizer] build response object: {(time.perf_counter() - t4) * 1000:.1f} ms")
+        print(f"[get_prices_visualizer][MAIN] build_response_object: {(time.perf_counter() - t4) * 1000:.1f} ms")
 
         t5 = time.perf_counter()
-        self._cleanup_old_day_cache()
-        print(f"[get_prices_visualizer] cache cleanup: {(time.perf_counter() - t5) * 1000:.1f} ms")
-        print(f"[get_prices_visualizer] total: {(time.perf_counter() - fn_start) * 1000:.1f} ms")
+        cleanup_ran = self._cleanup_old_day_cache_once_per_day()
+        cleanup_ms = (time.perf_counter() - t5) * 1000
+        if cleanup_ran:
+            print(f"[get_prices_visualizer][MAIN] cache_cleanup: {cleanup_ms:.1f} ms")
+        else:
+            print(f"[get_prices_visualizer][MAIN] cache_cleanup: skipped ({cleanup_ms:.1f} ms)")
+        print(f"[get_prices_visualizer][MAIN] total: {(time.perf_counter() - fn_start) * 1000:.1f} ms")
         return result
 
     async def get_forecast_prices(self, from_alias: str, type_name: str) -> Gw0PriceForecast:
