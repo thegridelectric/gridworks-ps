@@ -8,6 +8,8 @@ from gwprice.get_prices_from_isone_api import get_current_lmp, get_hourly_lmp
 from gwprice.asl.types.gw0_price_forecast import Gw0PriceForecast
 from gwprice.asl.types.gw0_realtime_price import Gw0RealtimePrice
 import pandas as pd
+import json
+from pathlib import Path
 
 class PriceRequest(BaseModel):
     '''Request for the prices for the visualizer'''
@@ -19,6 +21,51 @@ class PriceRequest(BaseModel):
 class PriceApi():
     def __init__(self):
         self.timezone_str = 'America/New_York'
+        self.visualizer_cache_dir = Path("data/isone_hourly_cache")
+
+    def _day_is_cacheable(self, day_time: pendulum.DateTime) -> bool:
+        cache_min_day = pendulum.now(tz=self.timezone_str).subtract(days=3).date()
+        return day_time.date() >= cache_min_day
+
+    def _cache_path_for_day(self, day_time: pendulum.DateTime) -> Path:
+        return self.visualizer_cache_dir / f"{day_time.strftime('%Y%m%d')}.json"
+
+    def _read_cached_day_prices(self, day_time: pendulum.DateTime):
+        if not self._day_is_cacheable(day_time):
+            return None
+        cache_path = self._cache_path_for_day(day_time)
+        if not cache_path.exists():
+            return None
+        try:
+            with open(cache_path, "r", encoding="utf-8") as file:
+                prices = json.load(file)
+            if isinstance(prices, list):
+                return prices
+        except Exception:
+            pass
+        return None
+
+    def _write_cached_day_prices(self, day_time: pendulum.DateTime, prices_day):
+        if not self._day_is_cacheable(day_time):
+            return
+        try:
+            self.visualizer_cache_dir.mkdir(parents=True, exist_ok=True)
+            with open(self._cache_path_for_day(day_time), "w", encoding="utf-8") as file:
+                json.dump(prices_day, file)
+        except Exception:
+            pass
+
+    def _cleanup_old_day_cache(self):
+        if not self.visualizer_cache_dir.exists():
+            return
+        cache_min_day = pendulum.now(tz=self.timezone_str).subtract(days=3).date()
+        for cache_file in self.visualizer_cache_dir.glob("*.json"):
+            try:
+                file_day = pendulum.from_format(cache_file.stem, "YYYYMMDD", tz=self.timezone_str).date()
+                if file_day < cache_min_day:
+                    cache_file.unlink()
+            except Exception:
+                continue
 
     def start(self):
         self.app = FastAPI()
@@ -54,15 +101,18 @@ class PriceApi():
         lmp_prices = []
         for day in range(num_days+1):
             day_time = start_time.add(days=day)
-            try:
-                prices_day = [
-                    x.value for x in get_hourly_lmp(
-                        market_name = "e.da60.hw1.isone.4001", 
-                        date_str = day_time.strftime("%Y%m%d")
-                    )
-                ]
-            except Exception as e:
-                prices_day = []
+            prices_day = self._read_cached_day_prices(day_time)
+            if prices_day is None:
+                try:
+                    prices_day = [
+                        x.value for x in get_hourly_lmp(
+                            market_name = "e.da60.hw1.isone.4001", 
+                            date_str = day_time.strftime("%Y%m%d")
+                        )
+                    ]
+                except Exception:
+                    prices_day = []
+                self._write_cached_day_prices(day_time, prices_day)
             if day==0:
                 prices_day = prices_day[start_time.hour:]
             if day==num_days:
@@ -97,6 +147,7 @@ class PriceApi():
             dist_list = dist_prices,
             energy_list = [x+y for x,y in zip(lmp_prices, dist_prices)]
         )
+        self._cleanup_old_day_cache()
         return result
 
     async def get_forecast_prices(self, from_alias: str, type_name: str) -> Gw0PriceForecast:
