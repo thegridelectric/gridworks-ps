@@ -1,6 +1,6 @@
 """Tests p.node type, version 000"""
 
-from gwprice.types import PNode
+from gwprice.named_types import PNode
 
 
 def test_p_node_generated() -> None:

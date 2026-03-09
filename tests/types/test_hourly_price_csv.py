@@ -2,7 +2,7 @@
 
 import pytest
 from gw.errors import GwTypeError
-from gwprice.types import HourlyPriceCsv
+from gwprice.named_types import HourlyPriceCsv
 
 
 def test_hourly_price_csv_generated() -> None:

@@ -2,7 +2,7 @@
 Tests for enum market.category.000 from the GridWorks Type Registry.
 """
 
-from gwprice.enums import MarketCategory
+from gwprice.asl.enums import MarketCategory
 
 
 def test_market_category() -> None:

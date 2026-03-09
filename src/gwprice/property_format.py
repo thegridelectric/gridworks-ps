@@ -4,7 +4,7 @@ from typing import Annotated, Dict
 
 from pydantic import BeforeValidator
 
-from gwprice.enums import MarketTypeName
+from gwprice.asl.enums import MarketTypeName
 
 
 def check_is_ads1115_i2c_address(v: str) -> None:

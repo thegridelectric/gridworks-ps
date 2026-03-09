@@ -2,7 +2,7 @@
 Tests for enum distribution.tariff.000 from the GridWorks Type Registry.
 """
 
-from gwprice.enums import DistributionTariff
+from gwprice.asl.enums import DistributionTariff
 
 
 def test_distribution_tariff() -> None:

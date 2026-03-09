@@ -46,7 +46,7 @@
                     </xsl:variable>
 
                     <FileSetFile>
-                                <xsl:element name="RelativePath"><xsl:text>../../../src/gwprice/types/</xsl:text>
+                                <xsl:element name="RelativePath"><xsl:text>../../../src/gwprice/asl/types/</xsl:text>
                                 <xsl:value-of select="translate($type-name,'.','_')"/><xsl:text>.py</xsl:text></xsl:element>
 
                         <OverwriteMode><xsl:value-of select="$overwrite-mode"/></OverwriteMode>
@@ -122,13 +122,13 @@ from gw import check_is_market_slot_name_lrd_format</xsl:text>
 </xsl:for-each>
 </xsl:if>
 <xsl:text>
-from gwprice.types.gw_base import GwBase</xsl:text>
+from gwprice.asl.codec import AslType</xsl:text>
 <xsl:for-each select="$airtable//TypeAttributes/TypeAttribute[(VersionedType = $versioned-type-id)]">
 
 
 <xsl:if test="(IsType = 'true') and (normalize-space(SubTypeDataClass) = '' or IsList = 'true')">
 <xsl:text>
-from gwprice.types.</xsl:text>
+from gwprice.asl.types.</xsl:text>
 <xsl:call-template name="python-case">
     <xsl:with-param name="camel-case-text" select="translate(SubTypeName,'.','_')"  />
 </xsl:call-template>
@@ -150,7 +150,7 @@ from gwprice.types.</xsl:text>
 </xsl:variable>
 <xsl:if test="count($airtable//TypeAttributes/TypeAttribute[(VersionedType = $versioned-type-id) and (EnumLocalName[text() = $base-name])])>0">
 <xsl:text>
-from gwprice.enums import </xsl:text>
+from gwprice.asl.enums import </xsl:text>
 <xsl:value-of select="$enum-local-name"/>
 </xsl:if>
 </xsl:for-each>
@@ -163,7 +163,7 @@ import algosdk</xsl:text>
 </xsl:for-each>
 
 <xsl:text>
-from gwprice.property_format import (</xsl:text>
+from gwprice.asl.property_format import (</xsl:text>
 <xsl:for-each select="$airtable//PropertyFormats/PropertyFormat[(normalize-space(Name) !='')  and (count(TypesThatUse[text()=$versioned-type-id])>0)]">
 <xsl:sort select="Name" data-type="text"/>
 <xsl:choose>
@@ -221,7 +221,7 @@ from gwprice.property_format import (</xsl:text>
 
 class </xsl:text>
 <xsl:value-of select="$python-class-name"/>
-<xsl:text>(GwBase):
+<xsl:text>(AslType):
 </xsl:text>
 
 

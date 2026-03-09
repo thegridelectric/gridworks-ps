@@ -1,6 +1,6 @@
 from typing import List
 
-from gwprice.types.p_node import PNode
+from gwprice.asl.types import PNode
 
 MyPNodeDicts = [
     {
